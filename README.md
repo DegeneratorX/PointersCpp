@@ -174,15 +174,26 @@ delete[] vec; // Libero memória que não será mais utilizada
 
 ## Instanciação vs Inicialização: qual utilizar?
 
+Existem 3 tipos de inicialização de uma classe.
+
 ```cpp
 Pessoa pessoa1;
 pessoa1.nome = "João";
 pessoa1.idade = 20;
+```
+
+```cpp
+Pessoa* pessoa2;
+pessoa2->nome = "Felipe";
+pessoa2->idade = 18
+```
+
+```cpp
 /////////////////
-Livro* calculo = new Livro;
-calculo->titulo = "O calculo com Geometria Analitica"
-calculo->autor = "Leithold"
-delete calculo;
+Pessoa* pessoa3 = new Pessoa;
+pessoa3->nome = "Carlos";
+pessoa3->idade = 31
+delete pessoa3;
 ```
 
 Qual dos dois usar? Quando usar?

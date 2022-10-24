@@ -2,6 +2,12 @@
 
 using namespace std;
 
+class Car{
+public:
+    char nome[50];
+    int ano;
+};
+
 int main()
 {
     cout << "\n\n =============================== \n\n";
@@ -29,8 +35,7 @@ int main()
     cout << "Valor de *p:              " << *p << endl;
     cout << "Valor de a:               " << a << endl;
 
-    int* porra = new int[100];
-    cout << *porra;
+    
 
     cout << "\n\n =============================== \n\n";
 }
