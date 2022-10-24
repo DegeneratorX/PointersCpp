@@ -35,16 +35,16 @@ int b = a; // b copia a. b = 10.
 
 ## Referência
 
-Uma variável é referenciada quando usa *ampersand &* e atrubi o valor capturado com *&* a uma outra variável do tipo ponteiro (int*).
+Uma variável é referenciada quando usa *ampersand &* e atrubi o valor capturado com *&* a uma outra variável do tipo ponteiro que aponta pra inteiro - int*.
 
 ```cpp
 int a = 10;
 int* b = &a; // b referencia a. b = 0x?????
 ```
 * *b* agora é 0x?????. O endereço da variável *a*.
-* Se mudar o valor de *b* por uma variável com *&*, muda pra onde aponta.
-* Se mudar sem *&*, dará erro. Afinal, *b* só pode receber endereço, e não valores. Ele é do tipo **intponteiro*, ou simplesmente int*.
-* Já se mudar o '*b', muda o valor de 'a'.
+* Se mudar o valor de *b* por uma variável com *&* (exemplo, *&c*), muda pra onde aponta (no caso apontará pra *c*).
+* Se mudar sem *&*, dará erro. Afinal, *b* só pode receber endereço, e não valores. Ele é do tipo intponteiro, ou simplesmente int*.
+* Já se mudar o *b pra 12, por exemplo, muda o valor de 'a' pra 12 também.
 
 > Nota: isso ocorre, pois *b é uma variável que é criada automaticamente após *b* referenciar com &outra_variável. Ou seja, b aponta pra &a (referencia a) assim como *b é criado e agora passa a apontar pra *a*.
 
