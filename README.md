@@ -36,7 +36,9 @@ int b = a; // b copia a. b = 10.
 
 ## Referência
 
-Uma variável é referenciada quando usa *ampersand &* e atrubi o valor capturado com *&* a uma outra variável do tipo ponteiro que aponta pra inteiro - int*. Esse tipo só aceita endereços e nada mais, que é um tipo especial de valor.
+Uma variável é referenciada quando usa *ampersand &* e atrubi o valor capturado com *&* a uma outra variável do tipo ponteiro que aponta pra inteiro - int* (pode ser qualquer outro tipo* na verdade). Esse tipo só aceita endereços e nada mais, que é um tipo especial de valor.
+
+& junto a uma variável é um operador, e significa o endereço de uma variável.
 
 ```cpp
 int a = 10;
@@ -47,7 +49,7 @@ int* b = &a; // b referencia a. b = 0x?????
 * Se mudar sem *&*, dará erro. Afinal, *b* só pode receber endereço, e não valores. Ele é do tipo intponteiro, ou simplesmente int*.
 * Já se mudar o *b pra 12, por exemplo, muda o valor de 'a' pra 12 também.
 
-> Nota: isso ocorre, pois *b é uma variável que é criada automaticamente após *b* referenciar com &outra_variável. Ou seja, b aponta pra &a (referencia a) assim como *b é criado e agora passa a apontar pra *a*.
+> Nota: isso ocorre, pois *b é uma operação que é permitida automaticamente após *b* referenciar com &outra_variável. Ou seja, b aponta pra &a (referencia a) assim como *b pode ser usado e agora passa a apontar para o valor *a*.
 
 ```cpp
 int    a = 10;
@@ -125,7 +127,7 @@ b = &c; // Atribuição
 
 ## Instanciar
 
-Instanciar é criar espaço na memória para guardar uma variável que aponta pra um tipo. Esse espaço é permanente e não encerra após o término do programa. Ou seja, pode ser acessado indefinidamente.
+Instanciar é criar espaço na memória para guardar um objeto genérico e abstrato, ao mesmo tempo que se declara uma variável que aponta pra esse objeto. Esse espaço é permanente e não encerra após o término do programa. Ou seja, pode ser acessado indefinidamente.
 
 Em POO, ao invés de chamarmos de instanciação de tipo, chamamos de instanciação de alguma classe. E a instância criada é um objeto.
 
@@ -156,9 +158,9 @@ char* vec = new char[100]; // Vetor de tamanho 100
 
 ## Alocar
 
-Basicamente tudo que fizemos acima também foi alocar memória. Ou seja, criamos memória para que o ponteiro aponte para aquela memória. 
+Basicamente tudo que fizemos acima também foi alocar memória. Ou seja, criamos memória para que o ponteiro aponte para aquela memória, onde está o objeto. 
 
-> Nota: Alocar não é criar ponteiro. É criar espaço de memória para que um ponteiro aponte para aquele espaço alocado. Não se cria nem deleta ponteiros.
+> Nota: Alocar não é criar ponteiro. É criar espaço de memória para que um ponteiro aponte para aquele espaço alocado. **Não se cria nem deleta ponteiros**.
 
 ## Liberar (desalocar)
 
@@ -224,7 +226,7 @@ delete pessoa3;
 
 - Já ao instanciar um objeto, ele poderá ser acessado dentro e fora de classes, funções, métodos, na função main, por outros arquivos... e todos os seus atributos também poderão ser utilizados. O problema disso é o risco de se criar inúmeros objetos da mesma classe, e como eles não são apagados automaticamente, ocorre um Memory Leak e consumo excessivo de RAM enquanto o programa estiver rodando.
 
-![image](https://user-images.githubusercontent.com/98990221/197656441-91f55da2-9450-407b-a6c1-836162423b14.png)
+![image](https://user-images.githubusercontent.com/98990221/197658918-cab9e1e0-a094-4bf3-a92b-94676d0e5d51.png)
 
 - Um exemplo clássico de uso de instanciação é ao utilizar uma classe ListaEncadeada. É impossível criar uma lista encadeada apenas com declaração e inicialização, pois nenhum método de uma classe dessas ou outras classes poderiam ter acesso a atributos e nós de uma lista encadeada, afinal, não teria ponteiros para referenciar esses valores de longe.
 
