@@ -226,7 +226,7 @@ delete pessoa3;
 
 - Já ao instanciar um objeto, ele poderá ser acessado dentro e fora de classes, funções, métodos, na função main, por outros arquivos... e todos os seus atributos também poderão ser utilizados. O problema disso é o risco de se criar inúmeros objetos da mesma classe, e como eles não são apagados automaticamente, ocorre um Memory Leak e consumo excessivo de RAM enquanto o programa estiver rodando.
 
-![image](https://user-images.githubusercontent.com/98990221/197658918-cab9e1e0-a094-4bf3-a92b-94676d0e5d51.png)
+![image](https://user-images.githubusercontent.com/98990221/197659563-900977b7-87b2-45e2-a1ac-023c0d08a0fa.png)
 
 - Um exemplo clássico de uso de instanciação é ao utilizar uma classe ListaEncadeada. É impossível criar uma lista encadeada apenas com declaração e inicialização, pois nenhum método de uma classe dessas ou outras classes poderiam ter acesso a atributos e nós de uma lista encadeada, afinal, não teria ponteiros para referenciar esses valores de longe.
 
