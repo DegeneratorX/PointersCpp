@@ -36,7 +36,7 @@ int b = a; // b copia a. b = 10.
 
 ## Referência
 
-Uma variável é referenciada quando usa *ampersand &* e atrubi o valor capturado com *&* a uma outra variável do tipo ponteiro que aponta pra inteiro - int* (pode ser qualquer outro tipo* na verdade). Esse tipo só aceita endereços e nada mais, que é um tipo especial de valor.
+Uma variável é referenciada quando usa *ampersand &* e atrubi o valor capturado com *&* a uma outra variável do tipo ponteiro que aponta pra inteiro - int* (pode ser qualquer outro tipo* na verdade). Esse tipo especial 'tipo*' só aceita endereços ou ponteiros e nada mais.
 
 & junto a uma variável é um operador, e significa o endereço de uma variável.
 
@@ -189,7 +189,7 @@ Existem 3 tipos de inicialização de uma classe. Qual dos três usar? Quando us
 ### Primeiro tipo: memória estática
 
 ```cpp
-Pessoa pessoa1;
+Pessoa pessoa1; // Declaração crua
 pessoa1.nome = "João";
 pessoa1.idade = 20;
 ```
@@ -208,12 +208,14 @@ pessoa2->idade = 18
 
 ```cpp
 Pessoa* pessoa1 = new Pessoa;
-Pessoa* pessoa2 = pessoa1;
+Pessoa* pessoa2 = pessoa1; // Única forma de dar certo é um tipo ponteiro declarado receber outro do mesmo tipo.
 pessoa2->idade = 18
 ```
 
-- Passando por referência um objeto do tipo Pessoa* para outro objeto do tipo Pessoa*, "cria-se" um novo objeto na memória que *pessoa2* aponta, e esse objeto é um ponteiro que aponta pra *pessoa1*.
-- Se mudar qualquer atributo em *pessoa2*, muda também em *pessoa1*, pois essa inicialização é por referência. Como *pessoa1* é um ponteiro, então não precisa do ampersand & pra passar por referência. Somente igualar já é suficiente.
+- Passando por referência um objeto do tipo Pessoa* (pessoa1) para outro objeto do tipo Pessoa* (pessoa2), *pessoa2* passa a apontar pra *pessoa1* que aponta pro objeto Pessoa. Ou seja, pessoa2 aponta pro mesmo lugar onde pessoa1 aponta, por transitividade. (pessoa2 -> pessoa1 -> Pessoa = pessoa2 -> Pessoa).
+- Se mudar qualquer atributo em *pessoa2*, muda também em *pessoa1*. 
+- Como *pessoa1* é um ponteiro, então não precisa do ampersand & pra apontar especificamente pra *pessoa1*. Somente igualar já é suficiente, assim você faz com que todas as propriedades de *pessoa1* sejam as mesmas de *pessoa2*, que é apontar pra *Pessoa* na memória.
+- Normalmente usar 'igual' com variáveis do tipo ponteiro, significa que vocẽ está apontando para algo novo, e não significa atribuição de valor.
 
 ### Terceiro tipo: memória dinâmica
 
@@ -296,7 +298,7 @@ int* c = &a; // c = 0xAAA, &c = 0xCCC, *c = 10
 
 ![image](https://user-images.githubusercontent.com/98990221/197656250-231bedaa-070d-40f6-9782-0f1bea1dd2d5.png)
 
-> Nota: o problema é que não é tão seguro esse tipo de prática ao declarar variável com &. Referenciar usando endereços (int*) se torna mais seguro para alterar valores por referência. Afinal, com endereço (int*), você sabe tanto o endereço quanto o conteúdo, e sabendo só o conteúdo (int&), você perde outras informações, por exemplo, nós de uma lista encadeada e consecutivos apontamentos.
+> Nota: o problema é que não é tão seguro esse tipo de prática ao declarar variável com &. Referenciar usando endereços (int*) se torna mais seguro para alterar valores por referência. Afinal, com endereço (int*), você sabe tanto o endereço quanto o conteúdo, e sabendo só o conteúdo (int&), você perde outras informações, por exemplo, nós de uma lista encadeada e consecutivos apontamentos, além de não poder apontar pra outro ponteiro.
 
 ## Cópia vs Referência em parâmetro de método ou função
 
@@ -363,4 +365,20 @@ int& x1 = x;
 int& y1 = y
 ```
 
-> Nota: como já dito no tópico sobre *Ampersand int&*, não é muito aconselhável fazer isso, apesar de diminuir linhas de código.
+### Resumo
+
+- int x: valor cru na memória.
+    - Vantagens: valor temporário que será descartado automaticamente da memória;
+    - Desvantages: se perde na memória assim que acabar a função, não podendo modificar diretamente o valor fora da função por referência.
+- int* x: aponta pro endereço onde o objeto está. 
+    - Vantagens: possibilidade de mudar valores fora da função por referência, além de ser mais seguro para apontar para objetos complexos.
+    - Desvantagens: uso do delete constantemente para objetos instanciados, e consome mais memória.
+- int& x: aponta pro conteúdo onde o objeto está.
+    - Vantagens: possibilidade de mudar valores fora da função por referência, além de consumir menos memória, pois aponta apenas pro valor, não pro endereço.
+    - Desvantagens: não pode atribuir ponteiros. Ou seja, não pode mudar pra onde aponta em variáveis do tipo*. Somente usado em valores simples para fazer pequenas alterações por referência.
+
+> Usar 'int x' para variável de controle, valores mais fixos ou descartáveis.
+> Usar 'int* x' para objetos mais complexos, assim não perde sua referência.
+> Usar 'int& x' para variáeis de controle que precisam ser mudadas fora da função, ou objetos simples, de forma que não precise igualar a outra variável do tipo ponteiro, e assim economiza memória.
+
+> Nota: como já dito no tópico sobre *Ampersand int&*, não é muito aconselhável fazer isso, apesar de diminuir linhas de código. Você tendo acesso apenas ao valor, limita bastante o seu acesso a outras informações, pois não é possível int& apontar pra um tipo ponteiro, afinal int& != int*.
