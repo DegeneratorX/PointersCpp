@@ -35,7 +35,9 @@ int main()
     cout << "Valor de *p:              " << *p << endl;
     cout << "Valor de a:               " << a << endl;
 
-    
+    int& x = a;
+
+    cout << x << endl;
 
     cout << "\n\n =============================== \n\n";
 }

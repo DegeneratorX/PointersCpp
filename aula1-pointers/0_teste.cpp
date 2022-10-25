@@ -8,8 +8,16 @@ public:
     int ano;
 };
 
+
 int main(){
-    Car* car1 = new Car;
-    car1->ano = 1990;
-    cout << car1->ano;
+
+    int a = 3;
+    int* b = &a;
+    int** c = &b;
+    int& d = a;
+
+    int* e = &d;
+
+    cout << d << endl;
+
 }
