@@ -251,7 +251,7 @@ No geral, um ponteiro possui "3 valores":
 
 Imagine esse p como sendo um bloco com 3 seções. Uma com &p, outra com p e outra com *p. Segue imagem pra exemplificar melhor:
 
-![image](https://user-images.githubusercontent.com/98990221/197656156-9fbf9d54-2658-4f61-bdfb-8091f27ec1c8.png)
+![image](https://user-images.githubusercontent.com/98990221/197656696-1f4c4c93-2429-4a0a-af69-8e3363567d51.png)
 
 > Nota: Quando o asterisco é usado com declaração de variável, é algo totalmente diferente do uso do asterisco acompanhado apenas da variável. Ou seja, int* p != *p. Mais detalhes abaixo.
 
