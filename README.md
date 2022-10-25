@@ -224,6 +224,8 @@ delete pessoa3;
 
 - Já ao instanciar um objeto, ele poderá ser acessado dentro e fora de classes, funções, métodos, na função main, por outros arquivos... e todos os seus atributos também poderão ser utilizados. O problema disso é o risco de se criar inúmeros objetos da mesma classe, e como eles não são apagados automaticamente, ocorre um Memory Leak e consumo excessivo de RAM enquanto o programa estiver rodando.
 
+![image](https://user-images.githubusercontent.com/98990221/197656441-91f55da2-9450-407b-a6c1-836162423b14.png)
+
 - Um exemplo clássico de uso de instanciação é ao utilizar uma classe ListaEncadeada. É impossível criar uma lista encadeada apenas com declaração e inicialização, pois nenhum método de uma classe dessas ou outras classes poderiam ter acesso a atributos e nós de uma lista encadeada, afinal, não teria ponteiros para referenciar esses valores de longe.
 
 - Em programas como Python e Java, ao instanciar um objeto, todos os atributos daquele objeto são passados por referência através do "self" ou "this" de forma automática, sem precisar usar ponteiros para isso. Por isso é possível criar estrutura de dados nessas linguagens, mesmo elas não utilizando ponteiros. As linguagens mais avançadas já entendem que certas coisas devem passadas por cópia, e outras por referência sem precisar explicitar o asterisco ou ampersand.
@@ -249,7 +251,7 @@ No geral, um ponteiro possui "3 valores":
 
 Imagine esse p como sendo um bloco com 3 seções. Uma com &p, outra com p e outra com *p. Segue imagem pra exemplificar melhor:
 
-IMAGEM
+![image](https://user-images.githubusercontent.com/98990221/197656156-9fbf9d54-2658-4f61-bdfb-8091f27ec1c8.png)
 
 > Nota: Quando o asterisco é usado com declaração de variável, é algo totalmente diferente do uso do asterisco acompanhado apenas da variável. Ou seja, int* p != *p. Mais detalhes abaixo.
 
@@ -289,6 +291,8 @@ int* c = &a; // c = 0xAAA, &c = 0xCCC, *c = 10
 - Tanto o caso do int& quando o caso do int* estão fazendo exatamente a **MESMA** coisa. **Referenciando**.
 - A diferença é que **int* aponta pro endereço de memória de um objeto**. Ou seja, qualquer variável do tipo int* só pode receber valores do tipo **endereço de memória**.
 - E o **int& aponta pro valor de um objeto, não endereço**. Ou seja, qualquer variável do tipo int& pode receber valores inteiros diretamente. 
+
+![image](https://user-images.githubusercontent.com/98990221/197656250-231bedaa-070d-40f6-9782-0f1bea1dd2d5.png)
 
 > Nota: o problema é que não é tão seguro esse tipo de prática ao declarar variável com &. Referenciar usando endereços (int*) se torna mais seguro para alterar valores por referência. Afinal, com endereço (int*), você sabe tanto o endereço quanto o conteúdo, e sabendo só o conteúdo (int&), você perde outras informações, por exemplo, nós de uma lista encadeada e consecutivos apontamentos.
 
