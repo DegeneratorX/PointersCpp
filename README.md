@@ -36,9 +36,7 @@ int b = a; // b copia a. b = 10.
 
 ## Referência
 
-Uma variável é referenciada quando usa *ampersand &* e atrubi o valor capturado com *&* a uma outra variável do tipo ponteiro que aponta pra inteiro - int* (pode ser qualquer outro tipo* na verdade). Esse tipo especial 'tipo*' só aceita endereços ou ponteiros e nada mais.
-
-& junto a uma variável é um operador, e significa o endereço de uma variável.
+Uma variável é referenciada quando usa *ampersand &* e atrubi o valor capturado com *&* a uma outra variável do tipo ponteiro que aponta pra inteiro - int*. Esse tipo só aceita endereços e nada mais, que é um tipo especial de valor.
 
 ```cpp
 int a = 10;
@@ -49,7 +47,7 @@ int* b = &a; // b referencia a. b = 0x?????
 * Se mudar sem *&*, dará erro. Afinal, *b* só pode receber endereço, e não valores. Ele é do tipo intponteiro, ou simplesmente int*.
 * Já se mudar o *b pra 12, por exemplo, muda o valor de 'a' pra 12 também.
 
-> Nota: isso ocorre, pois *b é uma operação que é permitida automaticamente após *b* referenciar com &outra_variável. Ou seja, b aponta pra &a (referencia a) assim como *b pode ser usado e agora passa a apontar para o valor *a*.
+> Nota: isso ocorre, pois *b é uma variável que é criada automaticamente após *b* referenciar com &outra_variável. Ou seja, b aponta pra &a (referencia a) assim como *b é criado e agora passa a apontar pra *a*.
 
 ```cpp
 int    a = 10;
@@ -127,7 +125,7 @@ b = &c; // Atribuição
 
 ## Instanciar
 
-Instanciar é criar espaço na memória para guardar um objeto genérico e abstrato, ao mesmo tempo que se declara uma variável que aponta pra esse objeto. Esse espaço é permanente e não encerra após o término do programa. Ou seja, pode ser acessado indefinidamente.
+Instanciar é criar espaço na memória para guardar uma variável que aponta pra um tipo. Esse espaço é permanente e não encerra após o término de uma função. Ou seja, pode ser acessado indefinidamente.
 
 Em POO, ao invés de chamarmos de instanciação de tipo, chamamos de instanciação de alguma classe. E a instância criada é um objeto.
 
@@ -138,7 +136,8 @@ int* obj = new int(5);
 ```
 
 - Os dois casos acima são equivalentes. O primeiro é usado em C, que inclui um casting pra int*, e o outro em C++, que simplifica mais esse processo sem necessidade de casting. São alocações dinâmicas de memória. O terceiro caso extra é pra mostrar que você pode usar um "construtor" da classe *int* pra passar o valor 5. Ou seja, *obj* "terá valor" 5.
-- Na verdade *obj* não tem valor de nada, por isso "terá valor" estava entre aspas. *obj* é um ponteiro que aponta pra um inteiro anônimo criado na memória, com valor 5.
+- Na verdade *obj* não tem valor de nada, por isso "terá valor" estava entre aspas. *obj* é um ponteiro que aponta pra um inteiro anônimo criado na memória, do tipo int e com valor 5.
+> Lê-se: *obj* é um tipo ponteiro que aponta pra um tipo int anônimo na memoria (int*), geralmente lixo. Ao igualar a um novo inteiro, apontamos (=) para esse novo (new) objeto do tipo inteiro (int) criado, e com atributos devidamente alocados (5, métodos da classe int, etc).
 
 ```cpp
 Pessoa* pessoa = (Pessoa*)malloc(sizeof(Pessoa));
@@ -146,7 +145,7 @@ Pessoa* pessoa = new Pessoa();
 ```
 
 - Uso de class ou struct para instanciar objetos. Ao usar (), chamamos também o construtor da classe Pessoa. Se não tiver, não precisa usar os parênteses.
-- pessoa é um ponteiro do tipo Pessoa* que aponta pra um objeto criado na memória do tipo Pessoa.
+- pessoa é um ponteiro do tipo Pessoa* que aponta pra um objeto criado e alocado na memória do tipo Pessoa.
 
 ```cpp
 char* vec = (char*)malloc(100 * sizeof(char)); // Vetor de tamanho 100.
@@ -154,13 +153,13 @@ char* vec = new char[100]; // Vetor de tamanho 100
 ```
 
 - Aqui mostro a alocação de um vetor de 100 bytes. Lembrando que um char é 1 byte.
-- *vec* é um ponteiro que aponta pro primeiro elemento do vetor alocado na memória. Nesse caso é obviamente lixo.
+- *vec* é um ponteiro que aponta pro primeiro elemento do vetor alocado na memória. Nesse caso é obviamente lixo, pois o vetor não foi preenchido.
 
 ## Alocar
 
-Basicamente tudo que fizemos acima também foi alocar memória. Ou seja, criamos memória para que o ponteiro aponte para aquela memória, onde está o objeto. 
+Basicamente tudo que fizemos acima também foi alocar memória. Ou seja, criamos memória para que o ponteiro aponte para aquela memória. 
 
-> Nota: Alocar não é criar ponteiro. É criar espaço de memória para que um ponteiro aponte para aquele espaço alocado. **Não se cria nem deleta ponteiros**.
+> Nota: Alocar não é criar ponteiro. É criar espaço de memória para que um ponteiro aponte para aquele espaço alocado. Não se cria nem deleta ponteiros.
 
 ## Liberar (desalocar)
 
@@ -186,17 +185,17 @@ delete[] vec; // Libero memória que não será mais utilizada
 
 Existem 3 tipos de inicialização de uma classe. Qual dos três usar? Quando usar?
 
-### Primeiro tipo: memória estática
+### Inicialização 1: memória estática
 
 ```cpp
-Pessoa pessoa1; // Declaração crua
+Pessoa pessoa1;
 pessoa1.nome = "João";
 pessoa1.idade = 20;
 ```
 
 - Ao declarar e inicializar um objeto normal e cru, você está declarando algo que só funcionará naquela função específica. Ou seja, **quando a função ou algoritmo acabar, ele não existirá mais**. É basicamente alocada uma memória temporária e estática pra guardar o objeto que se perderá em breve. É mais utilizado para criar objetos de controle 'aux' (ou temp) que não serão utilizados a não ser pra isso.
 
-### Segundo tipo: memória estática de um ponteiro
+### Inicialização 2: memória estática de um ponteiro
 
 ```cpp
 Pessoa* pessoa2;
@@ -204,20 +203,20 @@ pessoa2->nome = "Felipe"; // ERRO!!!!
 pessoa2->idade = 18
 ```
 
-- Ao declarar e inicializar um objeto que aponta pra um tipo Pessoa, no modo como foi apresentado acima, atribuindo valores diretamente, dará erro. A única forma de realmente fazer o caso acima é se:
+- Ao declarar e inicializar um objeto que aponta pra um tipo Pessoa, no modo como foi apresentado acima, atribuindo valores diretamente, dará erro, pois não tem memória alocada para passar esses atributos. A única forma de realmente fazer o caso acima é se:
 
 ```cpp
+Pessoa* pessoa2;
 Pessoa* pessoa1 = new Pessoa;
-Pessoa* pessoa2 = pessoa1; // Única forma de dar certo é um tipo ponteiro declarado receber outro do mesmo tipo.
-pessoa2->idade = 18
+pessoa2 = pessoa1;
+pessoa2->nome = "Felipe";
+pessoa2->idade = 18;
 ```
 
-- Passando por referência um objeto do tipo Pessoa* (pessoa1) para outro objeto do tipo Pessoa* (pessoa2), *pessoa2* passa a apontar pra *pessoa1* que aponta pro objeto Pessoa. Ou seja, pessoa2 aponta pro mesmo lugar onde pessoa1 aponta, por transitividade. (pessoa2 -> pessoa1 -> Pessoa = pessoa2 -> Pessoa).
-- Se mudar qualquer atributo em *pessoa2*, muda também em *pessoa1*. 
-- Como *pessoa1* é um ponteiro, então não precisa do ampersand & pra apontar especificamente pra *pessoa1*. Somente igualar já é suficiente, assim você faz com que todas as propriedades de *pessoa1* sejam as mesmas de *pessoa2*, que é apontar pra *Pessoa* na memória.
-- Normalmente usar 'igual' com variáveis do tipo ponteiro, significa que vocẽ está apontando para algo novo, e não significa atribuição de valor.
+- Passando por referência um objeto do tipo Pessoa* (pessoa1) para outro objeto do tipo Pessoa* (pessoa2), *pessoa2* passa a apontar pro mesmo objeto que *pessoa1* aponta, pois você está passando as propriedades de pessoa1 para pessoa2.
+- Se mudar qualquer atributo em *pessoa2*, muda também em *pessoa1*, afinal os dois apontam pro mesmo lugar, pois essa inicialização é por referência. Como *pessoa1* é um ponteiro, então não precisa do ampersand & pra passar por referência. Somente igualar já é suficiente, pois são do mesmo tipo 'Pessoa*'.
 
-### Terceiro tipo: memória dinâmica
+### Inicialização 3: memória dinâmica (instanciação)
 
 ```cpp
 Pessoa* pessoa3 = new Pessoa;
@@ -228,7 +227,7 @@ delete pessoa3;
 
 - Já ao instanciar um objeto, ele poderá ser acessado dentro e fora de classes, funções, métodos, na função main, por outros arquivos... e todos os seus atributos também poderão ser utilizados. O problema disso é o risco de se criar inúmeros objetos da mesma classe, e como eles não são apagados automaticamente, ocorre um Memory Leak e consumo excessivo de RAM enquanto o programa estiver rodando.
 
-![image](https://user-images.githubusercontent.com/98990221/197659563-900977b7-87b2-45e2-a1ac-023c0d08a0fa.png)
+![image](https://user-images.githubusercontent.com/98990221/197656441-91f55da2-9450-407b-a6c1-836162423b14.png)
 
 - Um exemplo clássico de uso de instanciação é ao utilizar uma classe ListaEncadeada. É impossível criar uma lista encadeada apenas com declaração e inicialização, pois nenhum método de uma classe dessas ou outras classes poderiam ter acesso a atributos e nós de uma lista encadeada, afinal, não teria ponteiros para referenciar esses valores de longe.
 
@@ -262,17 +261,17 @@ Imagine esse p como sendo um bloco com 3 seções. Uma com &p, outra com p e out
 ### Asterisco int*
 
 ```cpp
-int* p;
+int* p; // Caso 1
 
-*p = 3;
-p = &x
-&p = ? // Erro?
+*p = 3; // Caso2
+p = &x // Caso 3
+&p = ? // Caso 4. Erro?
 ```
 
-- O primeiro caso se refere a um p declarado como ponteiro que irá apontar pra um inteiro abstrato na memória. O asterisco está acoplado com o *int*, e NÃO com o *p*, o que significa que é uma notação pra dizer que é um tipo intpointer, ou seja, int != int*. É como se int* fosse outro tipo totalmente diferente.
-- O segundo caso o asterisco já tem outro significado completamente diferente. Significa um operador que diz sobre o conteúdo para onde o p aponta.
-- O terceiro caso, sem operador nenhum, só recebe endereço e nada mais.
-- O quarto e último caso é quando quero alterar o endereço de alguma variável em formato hexadecimal. Sinceramente **não sei se é possível diretamente dessa forma**. Mas dá pra fazer isso usando variável de controle, que captura endereço de outras variável e atribui a &p diretamente.
+- **O primeiro caso** se refere a um p declarado como ponteiro que irá apontar pra um inteiro genérico na memória. O asterisco está acoplado com o *int*, e NÃO com o *p*, o que significa que é uma notação pra dizer que é um tipo intpointer, ou seja, int != int*. É como se int* fosse outro tipo totalmente diferente.
+- **O segundo caso** o asterisco já tem outro significado completamente diferente. Significa um operador que diz sobre o conteúdo para onde o p aponta.
+- **O terceiro caso**, sem operador nenhum, só recebe endereço e nada mais.
+- **O quarto e último caso** é quando quero alterar o endereço de alguma variável em formato hexadecimal. Sinceramente **não sei se é possível diretamente dessa forma**. Mas dá pra fazer isso usando variável de controle, que captura endereço de outras variável e atribui a &p diretamente.
 
 Há uma confusão do uso do 'int* p' e do *p somente. Como falei acima, são duas coisas distintas. Uma é declaração de tipo, outra é operador pra dizer pro compilador que vc quer o conteúdo da variável que p aponta.
 
@@ -298,13 +297,13 @@ int* c = &a; // c = 0xAAA, &c = 0xCCC, *c = 10
 
 ![image](https://user-images.githubusercontent.com/98990221/197656250-231bedaa-070d-40f6-9782-0f1bea1dd2d5.png)
 
-> Nota: o problema é que não é tão seguro esse tipo de prática ao declarar variável com &. Referenciar usando endereços (int*) se torna mais seguro para alterar valores por referência. Afinal, com endereço (int*), você sabe tanto o endereço quanto o conteúdo, e sabendo só o conteúdo (int&), você perde outras informações, por exemplo, nós de uma lista encadeada e consecutivos apontamentos, além de não poder apontar pra outro ponteiro.
+> Nota: o problema é que não é tão seguro esse tipo de prática ao declarar variável com &. Referenciar usando endereços (int*) se torna mais seguro para alterar valores por referência, porém consome mais memória. Afinal, com endereço (int*), você sabe tanto o endereço quanto o conteúdo, e sabendo só o conteúdo (int&), você perde outras informações, por exemplo, nós de uma lista encadeada e consecutivos apontamentos, além de não poder apontar pra onde um tipo* ponteiro aponta.
 
 ## Cópia vs Referência em parâmetro de método ou função
 
 Por hora, por fim, falarei sobre o uso de ponteiros para passar valores por cópia, referência ou ponteiros.
 
-### Cópia
+### Passagem por cópia
 
 ```cpp
 void atribuicao(int x, int y){
@@ -321,7 +320,7 @@ int main(){
 
 - **Perceba que quando passo os valores para a função, estou criando cópias dela**, e ao serem atribuídas com novos valores dentro da função, nada mudará na main. Esse tipo de passagem de parâmetro por cópia é default na maioria das linguagens de programação, incluindo Python e Java (exceto quando se usa self/this).
 
-### Referência usando *
+### Passagem por referência usando *
 
 ```cpp
 void atribuicao(int* x1, int* y1){
@@ -343,7 +342,7 @@ int* x1 = &x;
 int* y1 = &y
 ```
 
-### Referência usando &
+### Passagem por referência usando &
 
 ```cpp
 void atribuicao(int& x1, int& y1){ // uso do int&
@@ -365,20 +364,38 @@ int& x1 = x;
 int& y1 = y
 ```
 
-### Resumo
+> Nota: como já dito no tópico sobre *Ampersand int&*, não é muito aconselhável fazer isso, apesar de diminuir linhas de código.
 
-- int x: valor cru na memória.
-    - Vantagens: valor temporário que será descartado automaticamente da memória;
-    - Desvantages: se perde na memória assim que acabar a função, não podendo modificar diretamente o valor fora da função por referência.
-- int* x: aponta pro endereço onde o objeto está. 
-    - Vantagens: possibilidade de mudar valores fora da função por referência, além de ser mais seguro para apontar para objetos complexos.
-    - Desvantagens: uso do delete constantemente para objetos instanciados, e consome mais memória.
-- int& x: aponta pro conteúdo onde o objeto está.
-    - Vantagens: possibilidade de mudar valores fora da função por referência, além de consumir menos memória, pois aponta apenas pro valor, não pro endereço.
-    - Desvantagens: não pode atribuir ponteiros. Ou seja, não pode mudar pra onde aponta em variáveis do tipo*. Somente usado em valores simples para fazer pequenas alterações por referência.
 
-> Usar 'int x' para variável de controle, valores mais fixos ou descartáveis.
-> Usar 'int* x' para objetos mais complexos, assim não perde sua referência.
-> Usar 'int& x' para variáeis de controle que precisam ser mudadas fora da função, ou objetos simples, de forma que não precise igualar a outra variável do tipo ponteiro, e assim economiza memória.
+## E o tipo void?
 
-> Nota: como já dito no tópico sobre *Ampersand int&*, não é muito aconselhável fazer isso, apesar de diminuir linhas de código. Você tendo acesso apenas ao valor, limita bastante o seu acesso a outras informações, pois não é possível int& apontar pra um tipo ponteiro, afinal int& != int*.
+O tipo **void** possui propriedades muito peculiares, e que mudam com o uso de ponteiro.
+
+### Void com variáveis
+
+```cpp
+void x; // Caso 1: ERRO
+void* y; // Caso 2: OK
+void& z; // Caso 3: ERRO
+```
+
+- O caso 1 ocasiona erro, pois é impossível declarar uma variável bruta sem um tipo.
+- O caso 2 age de forma completamente diferente. Significa que y é um ponteiro que aponta pra qualquer tipo de dado, podendo ser qualquer endereço. Ou seja, y aponta pra um endereço de objeto do tipo "coringa", pode ser qualquer tipo que assumirá sua forma somente depois.
+- O caso 3 ocasiona erro, pois referenciar diretamente um valor de tipo não assumido é impossível, afinal, void& aponta pra um valor, e não pro endereço, e não existe valor "coringa" em C++. Void& sempre ocasionará erro, sem exceções. Nunca se usa.
+
+### Void com funções
+
+```cpp
+void f(int x){} // Caso 1: OK
+void* f(int* x){return x;} // Caso 2: OK
+```
+
+- O caso 1 é uma função que retorna nada, trivial.
+- O caso 2 é uma função que retorna um ponteiro que aponta pra qualquer tipo de dado, não interessando o tipo dele quando se trabalha com o dado dentro da função. A vantagem do uso de void* é quando você não sabe que tipo de dado irá ser retornado ou o tipo de dado que será enviado por parâmetro.
+
+> Nota: a função malloc() é do tipo void*, ou seja, retorna um ponteiro do tipo void*.
+
+```cpp
+void* ptr_coringa = malloc(sizeof(int));
+int* ptr_pra_int = (int*)ptr_coringa;
+```
