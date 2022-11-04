@@ -6,224 +6,22 @@ Tudo sobre ponteiros, mastigado. Tive dificuldades para entender o conceito, e p
 - https://www.udemy.com/course/data-structures-algorithms-cpp/
 - https://www.udemy.com/course/data-structures-algorithms-python/ -> Esse aqui foi usado como referência para melhor compreensão do uso de POO.
 
+# Definições básicas
 
 Esse readme é para mostrar conceitos básicos da programação procedural e que até hoje alguns são extremamente utilizados.
-
-# O que é um ponteiro?
-
-Um ponteiro é basicamente um tipo de variável especial que pode receber apenas endereço de memória ou outra variável do tipo ponteiro. O endereço de memória possui um formato *0x????????*, onde *?* pode ser um número de 0 a f em hexadecimal, e um endereço nesse formato ocupa 8 bytes, 1 byte pra cada *?*.
-
-```cpp
-int* x; // Todos os tipos ocupam 8 bytes. O tipo int, float e double nesse caso são somente auxiliares, e somente diz pra que tipo de variável o ponteiro x, y ou z aponta para reservar a quantidade certa de memória ao manipular dados daquela região.
-float* y;
-double* z;
-```
-
-A grande vantagem do uso de um ponteiro é poder, de forma segura, alterar valores de variáveis pelo programa inteiro, inclusive fora do escopo de funções e classes. Isso seria possível sem o uso de ponteiros, mas necessita de muita gambiarra, o que torna praticamente inviável. Fora que para alocar memória dinamicamente, é obrigatório o seu uso. Falarei sobre isso depois.
-
-> Nota: Inicialmente irei nesse readme utilizar bastante exemplos com int* para facilitar o entendimento, mas o uso de ponteiro serve para todos os tipos primitivos de dados e Classes, e são praticamente aplicados da mesma forma.
-
-## Como declarar um ponteiro
-
-3 formas de declarar ponteiros:
-
-```cpp
-int* p; // Caso 1
-float * p; // Caso 2
-double *p; // Caso 3
-```
-
-> Nota: Perceba que todos os casos acima são iguais. Isso serve pra mostrar que eventualmente é possível encontrar códigos onde se usa algumas dessas formas para declarar um tipo *ponteiro*.
-
-- Didaticamente, o Caso 1 é o mais legível e convencional, visto que confunde menos ao colocar o **asterisco próximo do tipo** que o ponteiro aponta.
-- O Caso 3 resulta em muita confusão para quem está começando a aprender ponteiros, pois mais pra frente vamos ver que usar '*p' de forma isolada possui funcionalidade **completamente diferente**, chamada de deferência.
-
-## Como inicializar um ponteiro
-
-Como já foi dito, ponteiro só pode receber 2 tipos de valores: um endereço, ou outra variável do tipo ponteiro (que já aponta pra um objeto através de um endereço, óbvio).
-
-### Ponteiro recebendo endereço diretamente
-
-```cpp
-int a; // Declaração de variável
-a = 2; // Inicialização
-
-int* b; // Declaração de ponteiro (aponta pra um inteiro anônimo na memória)
-b = &a; // Inicialização (agora b passa a apontar pra a)
-```
-
-- Aqui o ponteiro b recebe o endereço de a (&a).
-
-> Nota: sempre que quiser acessar o endereço de um objeto na memória, usa-se '&objeto'. O operador & (ampersand) retorna o endereço que o objeto está localizado, em formato *0x????????*
-
-- Pronto, criamos um ponteiro *b* que aponta pra *a*.
-
-### Ponteiro recebendo outro ponteiro
-
-```cpp
-int* a;
-a = &obj_generico;
-
-int* b;
-b = a; // isso é equivalente dizer que a = b = &obj_generico
-```
-
-- Aqui o ponteiro b recebe o ponteiro a. Ou seja, *b* recebe o endereço que *a* tem guardado (&obj_generico). Ou seja, os dois agora passam a apontar pro mesmo obj_generico.
-
-### Ponteiro de ponteiro
-
-```cpp
-int* a;
-a = &obj;
-
-int** b;
-b = &a;
-```
-
-- Sim, isso é possível. *b* agora aponta pra *a*. Chama-se ponteiro de ponteiro. Para entender melhor o que se passa, usamos o exemplo extremo abaixo:
-
-```cpp
-int    a = 10;
-int*   b = &a;
-int**  c = &b;
-int*** d = &c;
-```
-
-- *d* aponta pra *c*, que *c* aponta pra *b*, que *b* aponta pra *a*. Ou seja, *d* "aponta" pra *a* de forma indireta. A partir de *d*, é possível, por incrível que pareça, obter informações de *a*.
-
-## Tipos de ponteiros
-
-Existem 2 tipos de ponteiros: um que guarda um endereço de um objeto na memória e referencia seu conteúdo, e outro que referencia seu conteúdo apenas, sem guardar nada.
-
-```cpp
-int* // Tipo ponteiro normal
-int& // Tipo ponteiro referência
-```
-
-Os dois tem a mesma função: apontar pra um objeto na memória.
-
-- 'int*' é muito mais poderoso que o 'int&', pois aponta pro endereço de memória e guarda esse endereço, ao custo de ocupar memória (8 bytes), pois o ponteiro também é uma variável que armazena o endereço de *a*. É o mais utilizado pelos programadores.
-- 'int&' é menos comum e é usado apenas para economizar linhas de código, pois diferente do int*, o int& não ocupa memória nenhuma. Pois é. Ou seja, serve puramente para enxugar linhas de código, além de operar bem mais rápido que o uso de um int*. Assim como o int*, o int& também modifica valores via referência. A grande desvantagem de não usarem frequentemente int& é que a partir do momento que se referencia algo, não tem mais como mudar a referência, ou seja, apontar pra outro objeto. Somente ponteiro é capaz, graças a capacidade de armazenar endereços.
-
-
-### Sintaxe do Asterisco int*:
-
-```cpp
-int a = 10;
-int* b = &a;
-```
-
-- Já foi explicado como funciona a sintaxe, mas irei repetir aqui para efeito de comparação com o caso abaixo.
-
-### Sintaxe do Ampersand int&:
-
-```cpp
-int a = 10;
-int& b = a;
-// int& c; <<< Declarar ponteiro assim é IMPOSSÍVEL, dado que 'c' não ocupa espaço nem é variável! Mais detalhes abaixo.
-```
-
-- Perceba que passei diretamente o valor de a, sem uso de &a nem nada. Isso porque b recebe o valor diretamente de uma variável.
-
-> Curiosidade: *b* **não existe**. Somente no código fonte. b não existe em tempo de compilação, nem ocupa memória nem armazena nada, pois como foi dito anteriormente, int& é um ponteiro invisível que serve somente para enxugar código e puramente serve para modificarmos o valor de *a* diretamente em qualquer parte do programa. É como se b = a, só que tudo que acontece em b, acontece em a. Inclusive ambos possuem o mesmo endereço de memória. Se b fosse int*, teria endereço de memória diferente, e aí sim ocuparia os 8 bytes de espaço armazenando o endereço de a.
-
-Entenda *int a* como um **arquivo.txt** e *int& b* um **atalho** para esse .txt no desktop. Porém, um atalho que ocupa 0 bytes. E tudo que for escrito e modificado abrindo pelo atalho, será modificado no arquivo original.
-
-> Nota: TUDO que se faz com int& também dá pra fazer com int*, mas não o inverso. Aconselha-se usar int& apenas em caso de mudanças simples de valores por referência fora do escopo de funções ao longo do programa.
-
-Para mudar valores via referẽncia usando int&, simplesmente mudamos o valor de *b*, que aponta para *a*.
-
-```cpp
-int a = 10;
-int& b = a; // ponteiro invisível que aponta pra 'a'.
-b = 12 // é como se fosse a = b = 12 de forma completamente automática
-cout << a << endl; // agora 'a' passa a assumir valor 12. Printará 12 na tela.
-```
-
-> Nota: Para fazer o mesmo com int*, chamamos de deferência, e será abordado em breve abaixo, pois possui maior complexidade.
-
-
-## Acessar o conteúdo de um objeto (Deferência, ou desreferência)
-
-Após aprender a apontar para um objeto, precisamos saber como funciona o acesso ao conteúdo desse objeto.
-
-Vimos que para acessar o conteúdo de um objeto usando int& é super simples. E para mudar o valor por referência, basta mudar o valor de *b*, que *a* mudava automaticamente.
-
-Mas no caso do *b* ser do tipo int*, envolve uma sintaxe extra para acessar esse mesmo conteúdo. O nome disso é deferenciar,
-
-Dereferenciar é acessar a informação (conteúdo) no endereço contido por um ponteiro e atribuir um valor qualquer a ele. É um conceito parecidíssimo com referência, a diferença é que int& trabalha com valores diretamente, e int* passa a trabalhar também com endereços (ou pra quem está apontando).
-
-Para deferenciar, utilizamos o operador '*' antes de um ponteiro para acessar o conteúdo para o qual o ponteiro aponta. Se prepara, pois agora vai ter bastante confusão.
-
-```cpp
-int a = 10
-int* b = &a // Referência
-*b = 12 // Dereferência.
-cout << a << endl; // agora 'a' passa a assumir valor 12. Printará 12 na tela.
-```
-
-- Como atribui *b = 12, 'a' agora passa a ser 12. Isso é dereferenciar. Basta colocar o asterisco * antes do b, e pronto, fará a mesma coisa do int& b = a.
-- O * nesse caso não é multiplicação e nada tem a ver com ponteiro. O * nesse momento é um OPERADOR que diz pro compilador que você quer acessar o conteúdo para o qual o *b* aponta, que é o valor (conteúdo) de *a*.
-
-Aqui está a diferença trivial desse uso do asterisco, para evitar confusão:
-
-```cpp
-int* p = &a; // Asterisco acoplado ao inteiro, indica que não é mais tipo 'int', mas agora é o tipo intptr, que é um ponteiro para um inteiro 'a'.
-*p = 10 // Asterisco acoplado a variável ponteiro. Significa um operador que diz que vc quer acessar o conteúdo da variável que p aponta. Ou seja, acessar o conteúdo de 'a'.
-```
-
-
-### int* vs int&: qual utilizar?
-
-- int*
-    - Aponta para um objeto do tipo inteiro;
-    - Muda valores por referência;
-    - Opera mais lentamente em tempo de compilação;
-    - Armazena endereço (8 bytes);
-    - Pode mudar e apontar pra outros objetos a qualquer hora;
-    - Comumente utilizado (tanto para operações simples quanto complexas).
-
-- int&
-    - Aponta para um objeto do tipo inteiro;
-    - Muda valores por referência;
-    - Opera mais rapidamente em tempo de compilação;
-    - Não armazena nada (não é variável, é invisível na compilação, puramente estético para enxugar código);
-    - Não pode mudar apontamento para outros objetos.
-    - Raramente utilizado (normalmente para operações simples).
-
-```cpp
-int a = 10; // a = 10, &a = 0xAAA, *a = ERRO
-
-int& b = a; // b = 10, &b = 0xAAA, *b = ERRO
-
-int* c = &a; // c = 0xAAA, &c = 0xCCC, *c = 10
-```
-- Tanto o caso do int& quando o caso do int* estão fazendo exatamente a **MESMA** coisa. **Referenciando**.
-- A diferença é que **int* aponta pro endereço de memória de um objeto**. Ou seja, qualquer variável do tipo int* só pode receber valores do tipo **endereço de memória**.
-- E o **int& aponta pro valor de um objeto, não endereço**. Ou seja, qualquer variável do tipo int& pode receber valores inteiros diretamente. 
-
-![image](https://user-images.githubusercontent.com/98990221/197656250-231bedaa-070d-40f6-9782-0f1bea1dd2d5.png)
-
-> Nota: Referenciar usando endereços (int*) se torna mais seguro para alterar valores por referência, porém consome mais memória. Afinal, com endereço (int*), você sabe tanto o endereço quanto o conteúdo, e sabendo só o conteúdo (int&), você perde outras informações, por exemplo, nós de uma lista encadeada e consecutivos apontamentos, além de não poder apontar pra onde um tipo* ponteiro aponta.
-
-
-### Asterisco tipo*
-
-
-- **O primeiro caso** se refere a um p declarado como ponteiro que irá apontar pra um inteiro genérico na memória. O asterisco está acoplado com o *int*, e NÃO com o *p*, o que significa que é uma notação pra dizer que é um tipo intpointer, ou seja, int != int*. É como se int* fosse outro tipo totalmente diferente.
-- **O segundo caso** o asterisco já tem outro significado completamente diferente. Significa um operador que diz sobre o conteúdo para onde o p aponta.
-- **O terceiro caso**, sem operador nenhum, só recebe endereço e nada mais.
-- **O quarto e último caso** é quando quero alterar o endereço de alguma variável em formato hexadecimal. Sinceramente **não sei se é possível diretamente dessa forma**. Mas dá pra fazer isso usando variável de controle, que captura endereço de outras variável e atribui a &p diretamente.
-
-Há uma confusão do uso do 'int* p' e do *p somente. Como falei acima, são duas coisas distintas. Uma é declaração de tipo, outra é operador pra dizer pro compilador que vc quer o conteúdo da variável que p aponta.
-
-> E o quinto caso extra, no caso de um **p? O asterisco junto a uma variável é um operador. O asterisco junto ao tipo transforma em um novo tipo. O que existe é 'int **', que é um tipo ponteiro de um ponteiro de um inteiro. **p mostra o conteúdo original para onde p aponta. Isso foi falado no primeiro tópico de referências.
-
-```cpp
-int* p = &a; // Asterisco acoplado ao inteiro, indica que não é mais tipo 'int', mas agora é o tipo intptr, que é um ponteiro para um inteiro
-*p = 10 // Asterisco acoplado a variável. Significa um operador que diz que vc quer acessar o conteúdo da variável que p aponta.
-```
-
+Aqui abordarei os seguintes conceitos:
+
+- Copiar
+- Referênciar
+- Dereferênciar
+- Declarar
+- Inicializar
+- Atribuir
+- Instanciar
+- Alocar
+- Liberar
+- Instanciação vs Inicialização: qual utilizar?
+- Cópia vs Referência em parâmetro de método ou função
 
 ## Cópia
 
@@ -460,6 +258,46 @@ Imagine esse p como sendo um bloco com 3 seções. Uma com &p, outra com p e out
 
 > Nota: Quando o asterisco é usado com declaração de variável, é algo totalmente diferente do uso do asterisco acompanhado apenas da variável. Ou seja, int* p != *p. Mais detalhes abaixo.
 
+### Asterisco int*
+
+```cpp
+int* p; // Caso 1
+
+*p = 3; // Caso2
+p = &x // Caso 3
+&p = ? // Caso 4. Erro?
+```
+
+- **O primeiro caso** se refere a um p declarado como ponteiro que irá apontar pra um inteiro genérico na memória. O asterisco está acoplado com o *int*, e NÃO com o *p*, o que significa que é uma notação pra dizer que é um tipo intpointer, ou seja, int != int*. É como se int* fosse outro tipo totalmente diferente.
+- **O segundo caso** o asterisco já tem outro significado completamente diferente. Significa um operador que diz sobre o conteúdo para onde o p aponta.
+- **O terceiro caso**, sem operador nenhum, só recebe endereço e nada mais.
+- **O quarto e último caso** é quando quero alterar o endereço de alguma variável em formato hexadecimal. Sinceramente **não sei se é possível diretamente dessa forma**. Mas dá pra fazer isso usando variável de controle, que captura endereço de outras variável e atribui a &p diretamente.
+
+Há uma confusão do uso do 'int* p' e do *p somente. Como falei acima, são duas coisas distintas. Uma é declaração de tipo, outra é operador pra dizer pro compilador que vc quer o conteúdo da variável que p aponta.
+
+> E o quinto caso extra, no caso de um **p? O asterisco junto a uma variável é um operador. O asterisco junto ao tipo transforma em um novo tipo. O que existe é 'int **', que é um tipo ponteiro de um ponteiro de um inteiro. **p mostra o conteúdo original para onde p aponta. Isso foi falado no primeiro tópico de referências.
+
+```cpp
+int* p = &a; // Asterisco acoplado ao inteiro, indica que não é mais tipo 'int', mas agora é o tipo intptr, que é um ponteiro para um inteiro
+*p = 10 // Asterisco acoplado a variável. Significa um operador que diz que vc quer acessar o conteúdo da variável que p aponta.
+```
+
+### Ampersand int&
+
+```cpp
+int a = 10;
+
+int& b = a; // b = 10, &b = 0xBBB, *b = ERRO
+
+int* c = &a; // c = 0xAAA, &c = 0xCCC, *c = 10
+```
+- Tanto o caso do int& quando o caso do int* estão fazendo exatamente a **MESMA** coisa. **Referenciando**.
+- A diferença é que **int* aponta pro endereço de memória de um objeto**. Ou seja, qualquer variável do tipo int* só pode receber valores do tipo **endereço de memória**.
+- E o **int& aponta pro valor de um objeto, não endereço**. Ou seja, qualquer variável do tipo int& pode receber valores inteiros diretamente. 
+
+![image](https://user-images.githubusercontent.com/98990221/197656250-231bedaa-070d-40f6-9782-0f1bea1dd2d5.png)
+
+> Nota: o problema é que não é tão seguro esse tipo de prática ao declarar variável com &. Referenciar usando endereços (int*) se torna mais seguro para alterar valores por referência, porém consome mais memória. Afinal, com endereço (int*), você sabe tanto o endereço quanto o conteúdo, e sabendo só o conteúdo (int&), você perde outras informações, por exemplo, nós de uma lista encadeada e consecutivos apontamentos, além de não poder apontar pra onde um tipo* ponteiro aponta.
 
 ## Cópia vs Referência em parâmetro de método ou função
 
