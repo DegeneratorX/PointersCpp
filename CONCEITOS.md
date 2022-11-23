@@ -1,5 +1,28 @@
 # Conceitos Básicos de C++
 
+## lvalue
+
+lvalue é um objeto que é identificado na memória e capaz de armazenar dado. Pode aparecer tanto no lado esquerdo quanto lado direito da expressão, e pode existir ao longo da execução do programa.
+
+```cpp
+int x = 10;
+int a = x;
+```
+
+x nesse caso seria um lvalue. Aparece tanto no lado esquerdo quanto direito da expressão.
+
+## rvalue
+
+rvalue é um objeto constante, ou seja, não pode ser modificado e nem armazena memória. Não pode ser colocado no lado esquerdo da expressão, somente no direito.
+
+
+```cpp
+int x = 10; // O 10 é uma constante
+True
+5==10 // Retorna um bool. É um rvalue
+int 10 = 5 // Não posso simplesmente mudar o valor constante de 10 pra 5.
+```
+
 ## Cópia
 
 Fazer uma cópia é passar um valor de uma variável para outra variável, e elas passam a serem independentes. Ou seja, mudar o valor de uma não afetará a outra.
@@ -9,7 +32,7 @@ int a = 10;
 int b = a; // b copia a. b = 10.
 ```
 * *b* agora é 10.
-> Nota: mudar o valor de *b*, não mudará o valor de *a*.
+> Nota: mudar o valor de *b* não mudará o valor de *a*.
 
 ## Referência
 
@@ -21,7 +44,7 @@ int* b = &a; // b referencia a. b = 0x?????
 ```
 * *b* agora é 0x?????. O endereço da variável *a*.
 * Se mudar o valor de *b* por uma variável com *&* (exemplo, *&c*), muda pra onde aponta (no caso apontará pra *c*).
-* Se mudar sem *&*, dará erro. Afinal, *b* só pode receber endereço, e não valores. Ele é do tipo intptr, ou simplesmente int*.
+* Se mudar sem *&*, dará erro. Afinal, *b* só pode receber endereço, e não valores. Ele é do tipo intpointer (int*).
 * Já se mudar o *b pra 12, por exemplo (derreferência), muda o valor de 'a' para 12 também.
 
 ```cpp
@@ -39,7 +62,7 @@ int*** d = &c;
 
 ## Derreferência (ou deferência)
 
-Dereferenciar é acessar a informação no endereço contido por um ponteiro e atribuir um valor qualquer a ele.
+Dereferenciar é acessar o conteúdo/a informação no endereço contido por um ponteiro e atribuir um valor qualquer a ele.
 
 ```cpp
 int a = 10
@@ -51,7 +74,7 @@ int b = &a // Referência
 
 ## Declarar
 
-Basicamente é só pra dizer para o compilador que o objeto existe e será usado depois.
+Basicamente é só pra dizer para o compilador que o objeto existe e será usado depois. Basicamente prepara espaço na memória para um futuro recebimento de um valor.
 
 ```cpp
 int a; // Declaração trivial
@@ -93,7 +116,21 @@ b = &c; // Atribuição
 
 ## Instanciar
 
-Instanciar é criar espaço na memória para guardar uma variável que aponta pra um tipo. Esse espaço é permanente e não encerra após o término de uma função. Ou seja, pode ser acessado fora do escopo dela.
+Instanciar é criar um objeto de uma Classe específica. Quando dizemos "instanciar a Classe", significa que estamos criando um objeto do tipo "Classe".
+
+```cpp
+class Pessoa{
+};
+
+Pessoa p1; // Instanciação de uma classe Pessoa.
+Pessoa p2;
+```
+
+### Instanciação sem ponteiros
+
+Não muito utilizado, mas possível, a instanciação de objetos 
+
+é criar espaço na memória e alocar dinamicamente ela. Esse espaço é permanente e não encerra após o término de uma função. Ou seja, pode ser acessado fora do escopo dela.
 
 Em POO, ao invés de chamarmos de instanciação de tipo, chamamos de instanciação de alguma classe. E a instância criada é um objeto de uma classe.
 
@@ -220,3 +257,91 @@ delete pessoa3;
 void* ptr_coringa = malloc(sizeof(int));
 int* ptr_pra_int = (int*)ptr_coringa;
 ```
+
+## Pilha (Stack) vs Heap na RAM
+
+Uma memória RAM possui duas principais estrutura de dados. A **Pilha**, que o compilador reserva cerca de 2MB de dados, e a **Heap**, que armazena dados indefinidamente.
+
+Elas são duas estruturas muito diferentes, mas fazem a mesma coisa. O programador pede um bloco de memória com um tamanho específico, e o compilador nos dá esse bloco de memória, se tudo der certo. A diferença está na forma como essa memória é alocada. E sem contar que alocação na Pilha é somente um comando *(int x = 10)*, enquanto que na Heap são diversos, incluindo *malloc()* e uso de ponteiros.
+
+```cpp
+int valor = 5; // aloca memória da Pilha
+int* heap_valor = new int; // aloca memória na Heap (malloc)
+*heap_valor = 5;
+
+int array[5]; // aloca memória na Pilha
+int* heap_array = new int[5]; // aloca memória na Heap
+```
+
+Mesma coisa vale para objetos de classes.
+
+```cpp
+struct Vector3{float x, y, z;};
+
+Vector3 vec; // aloca memória na Pilha
+Vector3* vec = new Vector3; // aloca memória na Heap
+delete[] vec;
+```
+
+### Pilha
+
+Alocação em Pilha é extremamente rápida, pois os valores ficam exatamente um ao lado de outro na memória, como uma pilha mesmo. Então seu acesso é bem fácil e rápido. O ponteiro para o topo da pilha basicamente anda pro lado e vai atribuindo os valores.
+
+A desvantagem é o limite do uso de memória. Ao estourar essa memória, temos um estouro de pilha (stack overflow).
+
+```cpp
+int value = 10; // 0x7fffffffdce4  
+int array[5];
+array[0] = 1; // 0x7fffffffdcf4
+array[1] = 2; // 0x7fffffffdcf8
+array[2] = 3; // 0x7fffffffdcfc
+array[3] = 4; // 0x7fffffffdd00
+array[4] = 5; // 0x7fffffffdd04
+```
+
+- Perceba que o endereço sempre pula de 4 em 4 bytes. Justamente o sizeof de um inteiro. E estão literalmente próximos uns dos outros na memória, incluindo o 'value' próximo do array.
+
+> Nota: perceba que o endereço pula de 4 em 4 bytes justamente porque o ponteiro do topo da pilha retorna pro primeiro endereço, o primeiro byte. O resto não interessa. A partir desse primeiro endereço (1 byte), eu leio os outros 3 bytes e tenho a informação do inteiro completa.
+
+- Outra coisa é que alocação na pilha faz com que o objeto dentro do escopo seja deletado (free) assim que o escopo acaba.
+
+```cpp
+{
+    int x = 10; // Alocação na pilha
+}
+// x não existe mais.
+```
+
+### Heap
+
+Alocação em Heap é mais lenta, mas não possui limite de memória, e o objeto alocado dessa forma pode ser acessado pelo programa todo.
+
+O limite do uso de memória é justamente a própria memória RAM do computador. Se o programa consumir 2GB de ram, muito provavelmente os 2GB são de objetos alocados na Heap.
+
+```cpp
+int* value = new int(10); // 0x7fffffffdb30
+int* array = new int[5];
+array[0] = 1; // 0x55555556aed0
+array[1] = 2; // 0x55555556aed4
+array[2] = 3; // 0x55555556aed8
+array[3] = 4; // 0x55555556aedc
+array[4] = 5; // 0x55555556aee0
+delete[] array;
+```
+
+- Perceba o quão distante fica o 'value' do array na memória com essa alocação. O que acontece é que a memória RAM tem uma **free list**, que é uma lista que contém todos os blocos de memória livres na Heap de diversos tamanhos. Esses blocos são constantemente checados em frações extremamente pequenas de tempo e jogados na lista. O compilador faz um request de um bloco desses, verifica se tem do tamanho desejado na 'free list', e a RAM retorna esse bloco para o compilador usar e alocar o objeto ali.
+
+E diferente da Pilha, na Heap o objeto continua existindo fora de um escopo.
+
+```cpp
+{
+    int* x = new int(10); // Alocação na Heap
+}
+// x continua existindo.
+```
+
+### Quando usar Pilha e quando usar Heap?
+
+Sempre que possível, é melhor utilizar alocação na pilha, pois as operações são muito mais rápidas para a CPU. É óbvio que não dá pra alocar em pilha todo tempo, afinal são 2MB de espaço no geral, somente. E também não dá pra alocar na Heap todo tempo. É inimaginável o programador dar 'new' pra qualquer tipo de variável que ele inicializa, e ainda ter de deletar tudo no final.
+
+Mas no caso da Pilha estar cheia, o que é difícil acontecer em programas bem otimizados, usa-se alocação na Heap. E também se usa alocação na Heap quando se deseja acessar objetos fora de escopos. Também é usado para objetos complexos, por exemplo, uma textura de 5MB, nesse caso é impossível alocar tanto assim na pilha.

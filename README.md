@@ -16,9 +16,17 @@ Um ponteiro é basicamente um tipo de variável especial que pode receber apenas
 
 O endereço de memória normalmente possui um formato *0x????????*, onde *?* pode ser um número de 0 a f em hexadecimal. A quantidade de *?* pode variar de acordo com o computador e compilador. Um endereço nesse formato ocupa 8 bytes em sistemas 64bit, 4 bytes em sistemas 32bit e 2 bytes em sistemas 16bit. Adotarei 8 bytes como um "sizeof" padrão de um ponteiro.
 
-A grande vantagem do uso de um ponteiro é poder, de forma segura, alterar valores de variáveis pelo programa inteiro, inclusive fora do escopo de funções e classes. Isso seria possível sem o uso de ponteiros, mas necessita de muita gambiarra e uso de memória/processamento, o que torna praticamente inviável quando se exige desempenho, e por isso seu uso é tão influente em estruturas de dados. Fora que para alocar memória dinamicamente, é obrigatório o seu uso. Falarei sobre isso depois.
+A grande vantagem do uso de um ponteiro é poder, de forma segura, alterar valores de variáveis pelo programa inteiro, inclusive fora do escopo de funções e classes. Isso seria possível sem o uso de ponteiros, mas necessita de muita gambiarra e uso bem maior de memória/processamento, o que torna praticamente inviável quando se exige desempenho, e por isso seu uso é tão influente em estruturas de dados. Fora que para alocar memória dinamicamente, é obrigatório o seu uso. Falo sobre isso no arquivo CONCEITOS.md.
 
 > Nota: Inicialmente irei nesse readme utilizar bastante exemplos com inteiros para facilitar o entendimento, mas o uso de ponteiro serve para todos os tipos primitivos de dados e Classes, e são praticamente aplicados da mesma forma.
+
+## Por que se utiliza ponteiros em C?
+
+Na verdade se utiliza ponteiros em todas as linguagens, desde assembly. Só que em C e seus derivados, o uso é explícito, porém com uma interface bonita.
+
+Imagine o seguinte: existe uma string de 200 bytes (200 caracteres) de dados em um local na memória. E eu preciso acessar esses dados e substituir por outro de 500 bytes, por exemplo. O processador já teria um trabalho imenso de ler 200 bytes, para depois sobrescrever esses dados. Os ponteiros solucionam esse desgaste desnecessário, pois ele lê apenas 8 bytes, que é o endereço de onde o objeto se localiza. A partir desse registro, nós podemos sobrescrever dados.
+
+É mais fácil dar o endereço de uma casa do que dar a cópia de uma casa para alguém.
 
 ## Como declarar um ponteiro
 
