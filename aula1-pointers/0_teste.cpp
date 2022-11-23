@@ -1,6 +1,8 @@
 #include <iostream>
 
-using namespace std;
+using std::cin; using std::cout; using std::endl;
+
+#define print(x) cout << x << endl;
 
 class Car
 {
@@ -9,10 +11,15 @@ public:
     int ano;
 };
 
+void* f(int* x){
+
+    *x = (double) 5.5;
+
+    return x;
+}
+
 int main()
 {
-    int a = 10;
-    int& c = a;
-
-    cout << &a << endl;
+    void* x;
+    print(sizeof(x));
 }
