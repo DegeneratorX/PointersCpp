@@ -10,6 +10,10 @@ Tudo sobre ponteiros, mastigado. Tive dificuldades para entender o conceito, e p
 
 Esse readme é para mostrar conceitos básicos da programação procedural e que até hoje alguns são extremamente utilizados.
 
+Requisitos para entender esse arquivo:
+- Programação básica e procedural em C++
+- Opcional: saber POO em qualquer linguagem derivada do C++ (Python, Java) para facilitar a compreensão, apesar de não obrigatório.
+
 # O que é um ponteiro?
 
 Um ponteiro é basicamente um tipo de variável especial que pode receber apenas endereço de memória ou "recebe" outra variável do tipo ponteiro (as aspas em "recebe" será explicada depois).
