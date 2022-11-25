@@ -17,7 +17,7 @@ int x = 10;
 int a = x;
 ```
 
-x nesse caso seria um lvalue. Aparece tanto no lado esquerdo quanto direito da expressão.
+*x* nesse caso seria um lvalue, e *a* também. Podem Aparecer tanto no lado esquerdo quanto direito da expressão.
 
 
 ## rvalue
@@ -26,9 +26,10 @@ rvalue é um objeto constante, ou seja, não pode ser modificado e nem armazena 
 
 
 ```cpp
-int x = 10; // O 10 é uma constante
-True
+int x = 10; // O 10 é uma constante de valor puro, um rvalue.
+True // rvalue
 5==10 // Retorna um bool. É um rvalue
+"Olá" // rvalue
 int 10 = 5 // Não posso simplesmente mudar o valor constante de 10 pra 5.
 ```
 
@@ -39,7 +40,7 @@ Fazer uma cópia é passar um valor de uma variável para outra variável, e ela
 
 ```cpp
 int a = 10;
-int b = a; // b copia a. b = 10.
+int b = a; // 'b' copia 'a' (ou 'b' recebe 'a'). Agora b = 10.
 ```
 * *b* agora é 10.
 > Nota: mudar o valor de *b* não mudará o valor de *a*.
@@ -47,16 +48,18 @@ int b = a; // b copia a. b = 10.
 
 ## Referência
 
-Uma variável é referenciada quando usa *ampersand &* e atrubi o valor capturado com *&* a uma outra variável do tipo ponteiro que aponta pra inteiro - int*. Esse tipo só aceita endereços e nada mais, que é um tipo especial de valor.
+Uma variável é referenciada quando usa *ampersand &* e atrubi o valor capturado com o operador *&* a uma outra variável do tipo ponteiro que aponta pra inteiro - int*. Esse tipo só aceita endereços e nada mais, que é um tipo especial de valor, e por isso que ele pode receber variáveis com &. Esse conceito já foi discutido no **README.md**.
 
 ```cpp
 int a = 10;
 int* b = &a; // b referencia a. b = 0x?????
 ```
-* *b* agora é 0x?????. O endereço da variável *a*.
+* *b* agora é 0x?????. Passa a guardar o endereço da variável *a*.
 * Se mudar o valor de *b* por uma variável com *&* (exemplo, *&c*), muda pra onde aponta (no caso apontará pra *c*).
-* Se mudar sem *&*, dará erro. Afinal, *b* só pode receber endereço, e não valores. Ele é do tipo intpointer (int*).
-* Já se mudar o *b pra 12, por exemplo (derreferência), muda o valor de 'a' para 12 também.
+* Se mudar sem *&*, dará erro. Afinal, *b* só pode receber endereço, e não valores, pois *b* é do tipo intpointer (int*).
+
+
+Eis um exemplo mais extremo:
 
 ```cpp
 int    a = 10;
@@ -65,7 +68,6 @@ int**  c = &b;
 int*** d = &c;
 ```
 
-- Adivinha o valor de *&c*? Pois é, o mesmo valor de *&a*. Um endereço *0x?????* genérico na memória.
 - Adivinha o valor de ***d? Pois é, o mesmo valor de *a*.
 - Adivinha o valor de *d*? Pois é, o mesmo valor de *&c*, afinal, *d = &c*.
 - *d* aponta pra *c*, que *c* aponta pra *b*, que *b* aponta pra *a*. Ou seja, *d* "aponta" pra *a*.
@@ -73,7 +75,7 @@ int*** d = &c;
 
 ## Derreferência (ou deferência)
 
-Dereferenciar é acessar o conteúdo/a informação no endereço contido por um ponteiro e atribuir um valor qualquer a ele.
+Dereferenciar é acessar o conteúdo/a informação no endereço contido por um ponteiro e atribuir um valor qualquer a ele. Isso é feito através do operador '*'. Esse conceito já foi discutido no **README.md**.
 
 ```cpp
 int a = 10
@@ -81,7 +83,20 @@ int b = &a // Referência
 *b = 12 // Dereferência.
 ```
 
-- Como *b = 12, 'a' agora passa a ser 12. Isso é derreferenciar.
+Se mudar o *b pra 12, por exemplo (derreferência), muda o valor de 'a' para 12 também. ' *b' é o conteúdo de 'a'. 'b' guarda e referencia o endereço de 'a'.
+
+Eis o mesmo exemplo extremo:
+
+```cpp
+int    a = 10;
+int*   b = &a;
+int**  c = &b;
+int*** d = &c;
+```
+
+Relembrando que d aponta indiretamente para a, é possível acessar o conteúdo de a através de d. Basta usar o operador de derreferência 3 vezes: * ( * ( * d)), ou ***d.
+
+Ao printar ***d, resultará no valor 10. Ao printar **d, resultará no endereço de 'a', que é o conteúdo de b. E obviamente, ao printar *d, resulta no conteúdo de c.
 
 
 ## Declarar
@@ -95,10 +110,10 @@ int& c; // ERRO: apesar de que dá pra fazer isso com parâmetro de funções.
 int f(int a); // Declaração de função que retorna um tipo inteiro
 class Pessoa; // Declaração de classe
 Pessoa person; // Declaração de um objeto.
-int z(); // Declaração trivial, com parênteses vazio (construtor).
+int z = int(); // Declaração não convencional, com parênteses vazio (construtor).
 ```
 
-> Nota: o caso 'int z();' fará mais sentido logo abaixo.
+> Nota: o caso 'int z() = int();' fará mais sentido logo abaixo.
 
 
 ## Inicializar
@@ -123,11 +138,13 @@ int* y = new int(15); // Declaração e inicialização
 Além disso, existem diversos outras formas de inicializar e declarar variáveis:
 
 ```cpp
-int valor(10); // Declaração e inicialização. 
-int valor = int(10); // Declaração e inicialização.
+int valor(10); // Declaração e inicialização. Desaconselhado o uso.
+int valor = int(10); // Declaração e inicialização. Apenas não convencional.
 ```
 
 - Perceba que uso um "construtor" que passa 10 pro 'valor'. São formas alternativas de inicializar, equivalentes a *'int valor = 10'*, e as duas estão corretas e fazem a mesma coisa.
+
+> Nota: o primeiro caso pode ser confundido com uma função, e portanto seu uso não é convencional e é desaconselhado. Porém, o compilador sabe a diferença. Se não tiver escopo {} e for passado **rvalues** diretamente, é uma variável estática sendo inicialziada. Caso contrário, é uma declaração de função. Não é possível apenas declarar dessa forma, por exemplo, apenas colocando 'int valor();', pois nesse caso o compilador entende como declaração de função, e não é possível inicializar depois.
 
 Em POO, normalmente as Classes são tratadas como tipo de variável criado pelo próprio programador, o que não deixa de ser verdade. Mas o contrário não ocorre em C++, pois nem todo tipo de variável é uma Classe. Porém, isso ocorre em Python, Java, etc. 
 

@@ -1,4 +1,5 @@
 #include <iostream>
+#include <string>
 
 using std::cin;
 using std::cout;
@@ -25,12 +26,15 @@ public:
     Pessoa() { std::cout << "Fui executado" << std::endl; } // Construtor
 };
 
+
+using std::string;
+
 int main()
 {
-    int valor();
-    Pessoa* p1 = new Pessoa;
-    print(p1);
+    string a = "Ola";
     // const char* nome = "Palio";
     // Car carro = Car("Palio", 18);
     // print(carro.nome);
+    print(a);
+
 }

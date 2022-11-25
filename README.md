@@ -5,7 +5,7 @@ Tudo sobre ponteiros, mastigado. Tive dificuldades para entender o conceito, e p
 - https://youtu.be/kiUGf_Z08RQ
 - https://www.youtube.com/watch?v=18c3MTX0PK0&list=PLlrATfBNZ98dudnM48yfGUldqGD0S4FFb&ab_channel=TheCherno -> playlist de vários vídeos super interessantes e simplificados sobre C++.
 - https://www.udemy.com/course/data-structures-algorithms-cpp/
-- https://www.udemy.com/course/data-structures-algorithms-python/ -> Esse aqui foi usado como referência para melhor compreensão do uso de POO.
+- https://www.udemy.com/course/data-structures-algorithms-python/ -> Esse aqui foi usado como referência para melhor compreensão do uso de passagem por referência em comparação com C++.
 
 
 Esse readme é para mostrar conceitos básicos da programação procedural e que até hoje alguns são extremamente utilizados.
@@ -24,7 +24,7 @@ A grande vantagem do uso de um ponteiro é poder, de forma segura, alterar valor
 
 > Nota: Inicialmente irei nesse readme utilizar bastante exemplos com inteiros para facilitar o entendimento, mas o uso de ponteiro serve para todos os tipos primitivos de dados e Classes, e são praticamente aplicados da mesma forma.
 
-## Por que se utiliza ponteiros em C?
+## Por que se utiliza ponteiros em C++?
 
 Na verdade se utiliza ponteiros em todas as linguagens, desde assembly. Só que em C e seus derivados, o uso é explícito, porém com uma interface bonita.
 
@@ -45,7 +45,7 @@ double *p; // Caso 3
 > Nota: Perceba que todos os casos acima são iguais. Isso serve pra mostrar que eventualmente é possível encontrar códigos onde se usa algumas dessas formas para declarar um tipo *ponteiro*.
 
 - Didaticamente, o Caso 1 é o mais legível e convencional, visto que confunde menos ao colocar o **asterisco próximo do tipo** que o ponteiro aponta.
-- O Caso 3 resulta em muita confusão para quem está começando a aprender ponteiros, pois mais pra frente vamos ver que usar '*p' de forma isolada possui funcionalidade **completamente diferente**, chamada de deferência.
+- O Caso 3 resulta em muita confusão para quem está começando a aprender ponteiros, pois mais pra frente vamos ver que usar '*p' de forma isolada possui funcionalidade **completamente diferente**, chamada de derreferência.
 
 ```cpp
 int* x; // 8 bytes
@@ -68,7 +68,7 @@ int a; // Declaração de variável
 a = 2; // Inicialização
 
 int* b; // Declaração de ponteiro.
-b = &a; // Inicialização (agora b passa a apontar pra a).
+b = &a; // Inicialização (agora b passa a apontar pra 'a').
 ```
 
 - Aqui o ponteiro b recebe o endereço de a (&a). 
@@ -112,7 +112,7 @@ int*** d = &c;
 
 - *d* aponta pra *c*, que *c* aponta pra *b*, que *b* aponta pra *a*. Ou seja, *d* "aponta" pra *a* de forma indireta. A partir de *d*, é possível, por incrível que pareça, obter informações de *a* e mudar eles, por exemplo, o valor 10.
 
-## Tipos de ponteiros
+# Tipos de ponteiros
 
 Existem 2 tipos de ponteiros: um que guarda um endereço de um objeto na memória e referencia seu conteúdo, e outro que referencia seu conteúdo apenas, sem guardar nada.
 
@@ -127,7 +127,7 @@ Os dois tem a mesma função: apontar pra um objeto na memória.
 - 'int&' é menos comum e é usado para economizar linhas de código, pois diferente do int*, em tempo de compilação, na maioria dos casos, o int& não ocupa memória. Pois é. Ou seja, serve puramente para enxugar linhas de código, além de operar bem mais rápido que o uso de um int*. Assim como o int*, o int& também modifica valores via referência. A grande desvantagem de não usarem frequentemente int& é que a partir do momento que se referencia algo, não tem mais como mudar a referência, ou seja, apontar pra outro objeto. Somente ponteiro é capaz, graças a capacidade de armazenar endereços.
 
 
-### Sintaxe do Asterisco int*:
+## Sintaxe do Asterisco int*:
 
 ```cpp
 int a = 10;
@@ -136,7 +136,7 @@ int* b = &a;
 
 - Já foi explicado como funciona a sintaxe, mas irei repetir aqui para efeito de comparação com o caso abaixo.
 
-### Sintaxe do Ampersand int&:
+## Sintaxe do Ampersand int&:
 
 ```cpp
 int a = 10;
@@ -161,9 +161,9 @@ b = 12 // é como se fosse a = b = 12 de forma completamente automática
 cout << a << endl; // agora 'a' passa a assumir valor 12. Printará 12 na tela.
 ```
 
-> Nota: Para fazer o mesmo com int*, chamamos de deferência, e será abordado em breve abaixo, pois possui maior complexidade.
+> Nota: Para fazer o mesmo com int*, chamamos de derreferência, e será abordado em breve abaixo, pois possui maior complexidade.
 
-> Nota 2: Existe a possibilidade de um int& ocupar espaço na memória, mas tudo vai depender de como o compilador vai ver essa necessidade. No geral ele não ocupa.
+> Nota 2: Existe a possibilidade de um int& ocupar espaço na memória, mas tudo vai depender de como o compilador vai ver essa necessidade. No geral ele não ocupa, e é puramente açucar sintático (syntax sugar).
 
 ## Acessar o conteúdo de um objeto (Deferência, Derreferência, ou desreferência)
 
@@ -173,20 +173,22 @@ Vimos que para acessar o conteúdo de um objeto usando int& é super simples. E 
 
 Mas no caso do *b* ser do tipo int*, envolve uma sintaxe extra para acessar esse mesmo conteúdo. O nome disso é derreferenciar,
 
-Derreferenciar é acessar a informação (conteúdo) no endereço contido por um ponteiro, com a possibilidade de modificar esse conteúdo, e como consequência, o conteúdo da variável para o qual o ponteiro aponta também muda para o mesmo valor. É um conceito parecidíssimo com referência, a diferença é que int& trabalha com valores diretamente, e int* passa a trabalhar também com endereços (ou pra quem está apontando).
+Derreferenciar é acessar a informação (conteúdo) que está atrelado ao endereço contido por um ponteiro, com a possibilidade de modificar esse conteúdo, e como consequência, o conteúdo da variável para o qual o ponteiro aponta também muda para o mesmo valor. É um conceito parecidíssimo com referência, a diferença é que int& trabalha com valores diretamente, e int* passa a trabalhar também com endereços (ou pra quem está apontando).
 
 Para deferenciar, utilizamos o operador '*' antes de um ponteiro para acessar o conteúdo para o qual o ponteiro aponta. Se prepara, pois agora vai ter bastante confusão.
 
 ```cpp
 int a = 10
 int* b = &a // Referência. Capturo o endereço de a. b agora aponta pra a.
-*b = 12 // Dereferência. Acesso o conteúdo para o qual b aponta (10). Modifico ele e coloco 12.
+cout << *b << endl;; // Printará 10 na tela. Estou derreferenciando. Acessando o conteúdo de a.
+*b = 12 // Derreferência. Acesso o conteúdo para o qual b aponta (10). Modifico ele e coloco 12.
+cout << *b << endl;; // Printará 12 na tela.
 cout << a << endl; // agora 'a' passa a assumir valor 12. Printará 12 na tela.
 ```
 
 - Como atribui *b = 12, 'a' agora passa a ser 12. Isso é derreferenciar. 
 - Basta colocar o asterisco * antes do b, e pronto, fará a mesma coisa do int& b = a.
-- O * nesse caso não é multiplicação e nada tem a ver com int*. O * nesse momento é outra coisa completamente diferente, no caso um OPERADOR que diz pro compilador que você quer acessar o conteúdo para o qual o *b* aponta, que é o valor (conteúdo) de *a*.
+- O * nesse caso não é multiplicação e nada tem a ver com 'int*'. O * nesse momento é outra coisa completamente diferente, no caso um OPERADOR que diz pro compilador que você quer acessar o conteúdo para o qual o *b* aponta, que é o valor (conteúdo) de *a*.
 
 Aqui está a diferença trivial desse uso do asterisco, para evitar confusão:
 
@@ -250,11 +252,11 @@ Imagine esse p como sendo um bloco com 3 seções. Uma com &p, outra com p e out
 É claro que a imagem não representa realmente o que se passa na memória, mas é uma abstração do que ocorre de uma forma mais lógica, a fim de facilitar o entendimento.
 
 
-## Cópia vs Referência em parâmetro de método ou função
+# Cópia vs Referência em parâmetro de método ou função
 
 Falarei sobre o uso de ponteiros para passar valores por cópia ou referência em funções.
 
-### Passagem por cópia
+## Passagem por cópia
 
 ```cpp
 void atribuicao(int x, int y){
@@ -271,7 +273,7 @@ int main(){
 
 - **Perceba que quando passo os valores para a função, estou criando cópias dela**, e ao serem atribuídas com novos valores dentro da função, nada mudará na main. Esse tipo de passagem de parâmetro por cópia é default na maioria das linguagens de programação, incluindo Python e Java (exceto quando se usa self/this, que trabalha automaticamente por referência).
 
-### Passagem por referência usando int*
+## Passagem por referência usando int*
 
 ```cpp
 void atribuicao(int* x1, int* y1){
@@ -293,7 +295,7 @@ int* x1 = &x;
 int* y1 = &y
 ```
 
-### Passagem por referência usando int&
+## Passagem por referência usando int&
 
 ```cpp
 void atribuicao(int& x1, int& y1){ // uso do int&
@@ -318,11 +320,11 @@ int& y1 = y
 Uma vantagem é que não preciso ficar derreferenciando dentro da função com o operador * para mudar o conteúdo de cada variável.
 
 
-## E o tipo void?
+# E o tipo void?
 
 O tipo **void** possui propriedades muito peculiares, e que mudam com o uso de ponteiro.
 
-### Void com variáveis
+## Void com variáveis
 
 ```cpp
 void x; // Caso 1: ERRO
@@ -339,13 +341,13 @@ Um outro caso curioso é esse aqui:
 ```cpp
 int x = 8;
 void* p = &x;
-*ptr = 10; // ERRO
+*p = 10; // ERRO
 ```
 
-- No momento que eu digo que 'p' é um ponteiro que não liga pra que tipo de variável ele vai apontar (void*), mas só quer o endereço, não há problemas. Mas se eu tentar mudar o conteúdo para qual 'p' aponta e colocar 10, o compilador definitivamente não sabe se aquele '10' é um int, ou um short, long long, ou até um char (char é um "int" com 1 byte). Ai é erro na certa.
+- No momento que eu digo que 'p' é um ponteiro que não liga pra que tipo de variável ele vai apontar (void*), mas só quer o endereço, não há problemas. Mas se eu tentar mudar o conteúdo para qual 'p' aponta e colocar 10 (rvalue), o compilador definitivamente não sabe se aquele '10' é um int, ou um short, long long, ou até um char (char é um "int" com 1 byte). Ai é erro na certa.
 - Basicamente se é preciso derreferenciar em algum momento, evitar usar void*.
 
-### Void com funções
+## Void com funções
 
 ```cpp
 void f(int x){} // Caso 1: OK
