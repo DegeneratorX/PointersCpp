@@ -25,6 +25,14 @@ class Pessoa
 public:
     int x;
     //Pessoa() { std::cout << "Fui executado" << std::endl; } // Construtor
+    Pessoa* getX()
+    {
+        return this;
+    }
+    
+    int setX(int x){
+        this->x = x;
+    }
 };
 
 
@@ -33,12 +41,5 @@ using std::string;
 int main()
 {
     Pessoa p;
-    Pessoa* e = &p;
-    
-    e->x = 10;
-    (*e).x = 5;
-    // const char* nome = "Palio";
-    // Car carro = Car("Palio", 18);
-    // print(carro.nome);
 
 }

@@ -224,8 +224,7 @@ A forma como se implementa essas alocações é bem detalhada nos tópicos segui
 Instanciar é criar um objeto de uma Classe específica. Quando dizemos "instanciar a Classe", significa que estamos criando um objeto do tipo "Classe".
 
 ```cpp
-class Pessoa{
-};
+class Pessoa{...};
 
 int valor; // "Instanciação" de uma "classe" int. Não aloca memória.
 Pessoa p1; // Instanciação de uma classe Pessoa. Aloca memória estática na pilha.
@@ -240,19 +239,19 @@ A instanciação sem uso de ponteiros envolve você simplesmente declarar o obje
 
 
 ```cpp
-class Pessoa{}; // Suponha que essa classe esteja completa, com atributos e métodos.
+class Pessoa{...}; // Suponha que essa classe esteja completa, com atributos e métodos.
 Pessoa p1; // Prepara espaço estático na pilha dizendo pro compilador que existe p1.
 p1.nome = "Zé" // Joga dados nesse espaço criado na pilha
 p1.correr(5) // Executa o método 'correr' 5km/h.
 
-int valor; // Não há preparo de espaço na pilha, apenas diz pro compilador que existe.
+int valor; // Isso não é instanciação. Não há preparo de espaço na pilha, apenas diz pro compilador que existe.
 valor = 10; // Aloca dados nesse espaço criado na pilha e joga 10 para o espaço alocado.
 ```
 
-Existem diversas formas de instanciar uma Classe.
+Existem diversas formas de instanciar uma Classe sem ponteiros.
 
 ```cpp
-class Pessoa{};
+class Pessoa{...};
 Pessoa p1; // Forma 1. Executa o construtor implicitamente.
 Pessoa p1(); // Forma 1.1. Age igual o de cima. Parênteses opcional.
 
@@ -272,14 +271,11 @@ int main(){Pessoa p1;} // Executa o construtor mesmo declarando
 
 > Output: Fui executado
 
-
-### Instanciação com ponteiros - Estática
-
-
-
 ### Instanciação com ponteiros - Dinâmica
 
-A instanciação com ponteiros de forma dinâmica envolve alocar espaço na Heap e retornar um ponteiro para aquele local alocado dentro da Heap. A heap fica localizada também na memória RAM, e seu espaço é ilimitado até a RAM estourar. Esse espaço alocado é permanente e não encerra após o término de uma função. Ou seja, pode ser acessado fora do escopo dela.
+A instanciação com ponteiros de forma dinâmica é a segunda forma mais utilizada para instanciar uma Classe. Envolve alocar espaço na Heap e retornar um ponteiro para aquele local alocado dentro da heap. A heap fica localizada também na memória RAM, e seu espaço é ilimitado até a RAM estourar. Esse espaço alocado é permanente e não encerra após o término de uma função. Ou seja, pode ser acessado fora do escopo dela.
+
+Usamos ponteiros apontados para objetos na Heap, pois na heap os objetos são muito espalhados, então precisamos de um ponteiro (dentro da pilha) que aponte para esse objeto anônimo na Heap, a fim de garantir seu "track" e não se perder na memória. O ponteiro dentro da pilha é essencial, pois a pilha é uma memória super organizada e que o compilador sabe onde esse ponteiro vai estar exatamente. Sabendo o ponteiro, ele sabe onde o objeto que é apontado na heap estará.
 
 > Nota: falo sobre armazenamento em Pilha e Heap no último tópico desse arquivo. Por hora, basta saber que inicializar qualquer coisa estática é alocar memória na Pilha, e inicializar qualquer coisa dinâmica é alocar memória na Heap.
 
@@ -295,7 +291,6 @@ int* obj = new int(5); // Inicialização
 
 - Os dois casos de C e C++ acima são equivalentes.
 
-
 - O primeiro caso é usado em C, que inclui um casting pra int* de um ponteiro que aponta para uma memória alocada do tamanho de um inteiro (4 bytes). malloc() retorna um ponteiro do tipo void*, que aponta para o endereço onde a memória foi alocada, e o casting para int* serve justamente para que esse o compilador saiba para que tipo de dado esse ponteiro aponta. E o obj, por ser um ponteiro, pode receber o mesmo endereço que malloc retornou, ou seja, obj agora aponta pra esse mesmo objeto inteiro anônimo que foi criado pelo malloc.
 
 - O segundo caso é usado em C++, que simplifica mais esse processo sem necessidade de casting, pois já faz tudo por trás, com o operador **new**. Ambos são alocações dinâmicas de memória e fazem exatamente a mesma coisa.
@@ -304,43 +299,70 @@ int* obj = new int(5); // Inicialização
 
 > Lê-se: *obj* é um tipo ponteiro para um inteiro que aponta pra um tipo int anônimo na memoria (int*), geralmente lixo. Ao "igualar" a um novo inteiro, o *obj* recebe o mesmo endereço desse novo (new) objeto do tipo inteiro (int) criado, e com atributos devidamente alocados (5, métodos da classe int, etc). Lembrando que new retorna um endereço do tipo void* (pq ele precisa apontar pra qualquer tipo de memória alocada inicialmente), e é feito um casting automático para int*.
 
+Mais exemplos:
+
 ```cpp
 Pessoa* pessoa = (Pessoa*)malloc(sizeof(Pessoa)); // C
 pessoa->Pessoa() // Construtor
+pessoa->nome = "Zé";
+pessoa->idade = 18;
 ```
 
 ```cpp
-// C++. Faz a mesma coisa das duas linhas de código acima.
-Pessoa* pessoa = new Pessoa(); // Pessoa() é o construtor.
+// C++. O código abaixo faz a mesma coisa das duas linhas de código acima.
+Pessoa* pessoa = new Pessoa(); // Pessoa() é também o construtor.
+pessoa->nome = "Zé";
+pessoa->idade = 18;
 ```
 
-#PAREI AQUI
-
-- Uso de class ou struct para instanciar objetos. O uso dos parênteses em Pessoa() é opcional desde que não precise passar nada pelo construtor.
-- pessoa é um ponteiro do tipo Pessoa* que passa a apontar para um objeto criado e alocado na memória do tipo Pessoa.
+- Uso de Classe ou Struct para instanciar objetos. O uso dos parênteses em Pessoa() é opcional desde que não precise passar nada pelo construtor.
+- pessoa é um ponteiro do tipo Pessoa* que passa a apontar para um objeto alocado na memória do tipo Pessoa através do seu endereço.
 
 ```cpp
 char* vec = (char*)malloc(100 * sizeof(char)); // Vetor de tamanho 100.
 char* vec = new char[100]; // Vetor de tamanho 100
 ```
 
-- Aqui mostro a alocação de um vetor de 100 bytes. Lembrando que um char é 1 byte.
-- *vec* é um ponteiro que aponta pro primeiro elemento do vetor alocado na memória. Nesse caso é obviamente lixo, pois o vetor não foi preenchido.
+> Nota: O uso de arrays será muito detalhado no arquivo ARRAY.md.
+
+- Aqui mostro a alocação de um array de 100 bytes. Lembrando que um char é 1 byte.
+- *vec* é um ponteiro que aponta pro primeiro elemento do vetor alocado na memória. Nesse caso o conteúdo é obviamente lixo, pois o vetor não foi preenchido.
 
 > Nota: a função malloc() é do tipo void*, ou seja, retorna um ponteiro do tipo void*.
 
 ```cpp
 void* ptr_coringa = malloc(sizeof(int));
-int* ptr_pra_int = (int*)ptr_coringa;
+int* ptr_pra_int = (int*)ptr_coringa; // casting de void* pra int*.
 ```
+
+### Instanciação com ponteiros - Estática
+
+Menos utilizada, mas possível. A instanciação de uma classe na pilha (estática) e o uso de ponteiro também na pilha para capturar o endereço dessa instância é menos comum, pois normalmente usamos ponteiros apontados para objetos na Heap pelo motivo já explicado (não perder o track do objeto).
+
+```cpp
+class Pessoa{...}
+Pessoa person;
+Pessoa* ptr = &person;
+ptr->nome = "Zé";
+ptr->idade = 18;
+```
+
+Aqui fica claro o motivo do uso da seta ->. A seta nada mais é do que isso:
+
+```cpp
+(*ptr).nome = "Zé";
+(*ptr).idade = 18;
+```
+
+Acesso o conteúdo do ponteiro (que é person), e assim consigo atribuir valores. Mesma coisa vale o uso da seta na alocação dinâmica.
 
 ## Liberar (desalocar)
 
-É o ato de retirar dados armazenados da memória RAM que não serão mais utilizados. Todo **malloc()** ou **new** precisa estar acompanhado de um **free()** ou **delete**, ou teremos o famoso Memory Leak.
+É o ato de liberar dados armazenados da memória RAM que não serão mais utilizados. Todo **malloc()** ou **new** precisa estar acompanhado de um **free()** ou **delete**, ou teremos o famoso Memory Leak.
 
-Memory leak é algo muito comum. Em jogos massivos como GTA V, o uso de memória RAM é alto, pois em uma cidade de mundo aberto temos vários objetos, várias instâncias atuando em um raio ao redor do jogador. E quando esses objetos saem do alcance do jogador, são deletadas para liberar memória, caso contrário o jogo pode crashar devido ao alto consumo de memória. O navegador Google Chrome também já sofreu com isso, e tem um histórico considerável de reclamações por consumo excessivo de RAM.
+Memory leak é algo muito comum. Em jogos massivos de mundo aberto, o uso de memória RAM é alto, pois em uma cidade de mundo aberto temos vários objetos, várias instâncias atuando em um raio ao redor do jogador. E quando esses objetos saem do alcance do jogador, são deletadas para liberar memória, caso contrário o jogo pode crashar devido ao alto consumo de memória. O navegador Google Chrome também já sofreu com isso, e tem um histórico considerável de reclamações por consumo excessivo de RAM.
 
-Como C++ é uma linguagem que não possui coletor de lixo automático (Garbage Collector), toda vez que se instancia um objeto, é preciso deletar essa mesma instanciação no fim de um programa ou ao longo dele quando não se precisa mais daquela memória.
+Como C++ é uma linguagem que não possui coletor de lixo automático (Garbage Collector), toda vez que se instancia um objeto na heap, é preciso deletar essa mesma instancia no fim de um programa ou ao longo dele quando não se precisa mais daquela memória.
 
 ```cpp
 int* a = (int*)malloc(sizeof(int));
@@ -355,12 +377,11 @@ delete[] vec; // Libero memória que não será mais utilizada
 ```
 
 
-# Instanciação vs Inicialização: qual utilizar?
+# Atribuir valores para uma instância de Classe: qual utilizar?
 
-Existem 3 tipos de inicialização de uma classe. Qual dos três usar? Quando usar?
+Existem 3 principais formas de atribuir valores a uma instância de uma classe.
 
-
-## Inicialização 1: memória estática
+## Atribuição 1: Padrão
 
 ```cpp
 Pessoa pessoa1;
@@ -368,32 +389,40 @@ pessoa1.nome = "João";
 pessoa1.idade = 20;
 ```
 
-- Ao declarar e inicializar um objeto normal e cru, você está declarando algo que só funcionará naquela função específica. Ou seja, **quando a função ou algoritmo acabar, o objeto não existirá mais**. É basicamente alocada uma memória temporária e estática pra guardar o objeto que se perderá em breve. É mais utilizado para criar objetos de controle 'aux' (ou temp) que não serão utilizados a não ser para isso.
+- Ao declarar e inicializar um objeto normal e cru, você está declarando algo que só funcionará naquele escopo {} específico. Ou seja, **quando o escopo acabar, o objeto não existirá mais**. É basicamente alocada uma memória temporária e estática na pilha pra guardar o objeto que se perderá em breve.
 
-
-## Inicialização 2: memória estática de um ponteiro
+## Atribuição 2: Dois ponteiros apontando pro mesmo lugar
 
 ```cpp
-Pessoa* p2;
+Pessoa* p2; // Isso não é instanciação!
 p2->nome = "Zé"; // ERRO!!!!
 p2->idade = 18
 ```
 
-- Ao declarar e inicializar um objeto que aponta pra um tipo Pessoa, no modo como foi apresentado acima, atribuindo valores diretamente, dará erro, pois não tem memória alocada dinamicamente para passar esses atributos. A única forma de realmente fazer o caso acima é se:
+- Ao declarar e inicializar um objeto que aponta pra um tipo Pessoa, no modo como foi apresentado acima, atribuindo valores diretamente, dará erro, pois não tem memória alocada para passar esses atributos, afinal foi declarado um ponteiro para um tipo Pessoa, e não o objeto em si. A única forma de realmente fazer o caso acima é nesses dois casos:
 
 ```cpp
 Pessoa* p2;
-Pessoa* p1 = new Pessoa;
+Pessoa* p1 = new Pessoa; // 'new Pessoa' é uma instanciação da classe Pessoa. p1 aponta pra essa instância.
 p2 = p1; // p2 recebe o endereço de p1, portanto, aponta pro mesmo lugar onde p1 aponta.
 p2->nome = "Zé";
 p2->idade = 18;
+delete p1;
 ```
 
 - Passando por referência um objeto do tipo Pessoa* (pessoa1) para outro objeto do tipo Pessoa* (pessoa2), *pessoa2* passa a apontar pro mesmo objeto que *pessoa1* aponta, pois você está passando o endereço de pessoa1 para pessoa2.
 - Se mudar qualquer atributo em *pessoa2*, muda também em *pessoa1*, afinal os dois apontam pro mesmo lugar, pois essa inicialização é por referência. Como *pessoa1* é um ponteiro, então não precisa do ampersand & pra passar por referência. Somente igualar já é suficiente, pois são do mesmo tipo 'Pessoa*'.
 
+```cpp
+Pessoa p1;
+Pessoa* p2 = &p1;
+p2->nome = "Zé"; // Muda os atributos de p1.
+p2->idade = 18;
+```
 
-## Inicialização 3: memória dinâmica (instanciação)
+- Esse é o segundo caso. Já foi exeemplificado no tópico *Instanciação com ponteiros - Estática*.
+
+## Atribuição 3: Ponteiro apontando 
 
 ```cpp
 Pessoa* pessoa3 = new Pessoa;
@@ -402,30 +431,19 @@ pessoa3->idade = 31
 delete pessoa3;
 ```
 
-- Já ao instanciar um objeto, ele poderá ser acessado dentro e fora de classes, funções, métodos, na função main, por outros arquivos... e todos os seus atributos também poderão ser utilizados. O problema disso é o risco de se criar inúmeros objetos da mesma Classe, e como eles não são apagados automaticamente, pode ocorrer um Memory Leak e consumo excessivo de RAM enquanto o programa estiver rodando.
+- Ao instanciar na heap, o objeto pode ser acessado dentro e fora de classes, funções, métodos, na função main, por outros arquivos... e todos os seus atributos também poderão ser utilizados. O problema disso é o risco de se criar inúmeros objetos da mesma Classe, e como eles não são apagados automaticamente, pode ocorrer um Memory Leak e consumo excessivo de RAM enquanto o programa estiver rodando.
 
 ![image](https://user-images.githubusercontent.com/98990221/197656441-91f55da2-9450-407b-a6c1-836162423b14.png)
 
-- Um exemplo clássico de uso de instanciação é ao utilizar uma classe ListaEncadeada. É impossível criar uma lista encadeada apenas com declaração e inicialização, pois nenhum método de uma classe dessas ou outras classes poderiam ter acesso a atributos e nós de uma lista encadeada, afinal, não teria ponteiros para referenciar esses valores de longe.
+- Em linguagens como Python e Java, ao instanciar um objeto, todos os atributos daquele objeto são passados por referência através do "self" ou "this" de forma automática, sem precisar usar ponteiros para isso. Por isso é possível criar estrutura de dados nessas linguagens, mesmo elas não utilizando ponteiros na sintaxe, pois ela tem ponteiros implicitos. As linguagens mais avançadas já entendem que certas coisas devem passadas por cópia, e outras por referência sem precisar explicitar o asterisco ou ampersand.
 
-- Em programas como Python e Java, ao instanciar um objeto, todos os atributos daquele objeto são passados por referência através do "self" ou "this" de forma automática, sem precisar usar ponteiros para isso. Por isso é possível criar estrutura de dados nessas linguagens, mesmo elas não utilizando ponteiros. As linguagens mais avançadas já entendem que certas coisas devem passadas por cópia, e outras por referência sem precisar explicitar o asterisco ou ampersand.
-
-> Nota: O tópico 'Inicialização 1' com atribuições a *p1* feita com ponto (.) não é comum, e é desaconselhado seu uso. Normalmente outras linguagens mais modernas, como já falado antes, já fazem por referência, só que utilizando o '.' ao invés do '->'. Já no C++, o '.' é de fato cópia, enquanto que em Java ou Python, o '.' é referência.
-
-
-## Ou seja...
-
-- Instanciar sem ponteiros é aconselhado **apenas** para variáveis locais e de pouca importância. Pode usar também para variáveis de controle, tipo um armazenamento temporário de um nó de uma lista encadeada;
-- **Não usar** declaração e inicialização para objetos mais complexos, como classes robustas, pois terá pouca utilidade e pode gerar erros;
-- Usar instanciação para guardar valores importantes na memória e poder utilizá-los onde bem entender, e só deletar quando o programador quiser;
-- **Não usar** instanciação para valores temporários ou de pouca relevância.
-
+> Nota: Normalmente outras linguagens mais modernas, como já falado antes, já fazem por referência, só que utilizando o '.' ao invés do '->'. Já no C++, o '.' é de fato feito sobre uma cópia, enquanto que em Java ou Python, o '.' é muitas vezes feito sobre uma referência.
 
 # Pilha (Stack) vs Heap na RAM (Random Access Memory)
 
 Uma memória RAM possui duas principais estrutura de dados. A **Pilha**, que o compilador reserva cerca de 2MB de dados de forma estática, e a **Heap**, que armazena dados indefinidamente de forma dinâmica.
 
-Elas são duas estruturas muito diferentes, mas fazem a mesma coisa. O programador pede um bloco de memória com um tamanho específico, e o compilador nos dá esse bloco de memória se tudo der certo. A diferença está na forma como essa memória é alocada. E sem contar que alocação e inicialização na Pilha é somente um comando *(int x = 10)*, enquanto que na Heap são diversos, incluindo *malloc()* e uso de ponteiros.
+Elas são duas estruturas muito diferentes, mas fazem a mesma coisa. O programador pede um bloco de memória com um tamanho específico, e o compilador nos dá esse bloco de memória se tudo der certo. A diferença está na forma como essa memória é alocada. E sem contar que alocação e inicialização na Pilha é somente um comando *(int x = 10)*, enquanto que na Heap são diversos, incluindo *malloc()* e uso de ponteiros (mais lenta).
 
 ```cpp
 int valor = 5; // aloca memória da Pilha e coloca o valor 5 lá
@@ -446,7 +464,7 @@ Vector3* vec = new Vector3; // aloca memória na Heap
 delete[] vec;
 ```
 
-- Alocar na pilha é uma alocação estática de memória (ocorre em tempo de compilação), enquanto que na Heap é uma alocação dinâmica de memória (ocorre em tempo de execução).
+- Alocar na pilha é uma alocação estática de memória (ocorre em tempo de compilação, tamanho predefinido e feito de uma vez), enquanto que na Heap é uma alocação dinâmica de memória (ocorre em tempo de execução, é criado ou destruído quando o programa quiser).
 - A pilha possui memória de duração automática (temporária), enquanto que na Heap possui memória de duração dinâmica.
 
 ## Pilha
@@ -472,17 +490,19 @@ array[4] = 5; // 0x7fffffffdd04
 - Outra coisa é que alocação na pilha faz com que o objeto dentro do escopo seja deletado (free) assim que o escopo acaba.
 
 ```cpp
-{
-    int x = 10; // Alocação na pilha
-}
+int main(){
+    {
+        int x = 10; // Alocação na pilha
+    }
 // x não existe mais.
+}
 ```
 
 ## Heap
 
-Alocação em Heap é mais lenta e feita em tempo de execução, mas não possui limite de memória, e o objeto alocado dessa forma pode ser acessado pelo programa todo.
+Alocação em Heap é mais lenta e feita em tempo de execução, mas não possui limite de memória, e o objeto alocado dessa forma pode ser acessado pelo programa todo, inclusive fora de escopos.
 
-O limite do uso de memória é justamente a própria memória RAM do computador. Se o programa consumir 2GB de ram, muito provavelmente os 2GB são de objetos alocados na Heap.
+O limite do uso de memória é justamente a própria memória RAM do computador. Se um programa consumir 2GB de ram, por exemplo, muito provavelmente os 2GB são de objetos alocados na Heap.
 
 ```cpp
 int* value = new int(10); // 0x7fffffffdb30
@@ -500,14 +520,54 @@ delete[] array;
 E diferente da Pilha, na Heap o objeto continua existindo fora de um escopo.
 
 ```cpp
-{
-    int* x = new int(10); // Alocação na Heap
-}
+int main(){
+    {
+        int* x = new int(10); // Alocação na Heap
+    }
 // x continua existindo.
+}
 ```
 
 ## Quando usar Pilha e quando usar Heap?
 
 **Sempre que possível, é melhor utilizar alocação na pilha**, pois as operações são muito mais rápidas para a CPU. É óbvio que não dá pra alocar em pilha todo tempo, afinal são 2MB de espaço no geral somente. E também não dá pra alocar na Heap todo tempo. É inimaginável o programador dar 'new' pra qualquer tipo de variável que ele inicializa, e ainda ter de deletar tudo no final.
 
+Alocação (estática) na pilha é a mais comum em C++. A maiorai das coisas se declaram na pilha, incluindo instâncias de Classes. Para quem veio de linguagens como Java ou C#, é estranho ver isso, pois normalmente nessas linguagens esse tipo de instanciação tem chance de levantar exceção de NullPointer em tempo de execução. Todo objeto em Java ou C# é instanciado na heap usando **new**, sem ressalvas. Mas em C++ temos a opção de instanciar direto na pilha, o que torna as operações muito mais rápidas e seguras, porém limitadas em espaço.
+
 Mas no caso da Pilha estar cheia, o que é difícil acontecer em programas bem otimizados, usa-se alocação na Heap. E também se usa alocação na Heap quando se deseja acessar objetos fora de escopos. Também é usado para objetos complexos, por exemplo, uma textura de 5MB, nesse caso é impossível alocar tanto assim na pilha.
+
+## E o 'this'?
+
+A keyword **this** nada mais é do que um ponteiro para a própria instância da Classe. No construtor muitas vezes é utilizado pra não gerar conflito com parâmetros passados, pois ele pode levar o mesmo nome do atributo da instância atual.
+
+```cpp
+class Pessoa{
+    int nome;
+    int idade;
+    Pessoa(string nome, int idade){
+        this->nome = nome;
+        (*this).idade = idade; // idade = idade sem o 'this' seria redundante e bizarro.
+    }
+}
+```
+
+- Perceba que eu acesso o conteúdo de 'this' (*this), que é a própria instância, e passo o valor do campo "nome" e "idade" (que estão private).
+
+```cpp
+class Pessoa{
+    int nome;
+public:
+    Pessoa getObjeto(){
+        return (*this);
+    }
+    string setObjeto(string nome){
+        (*this).nome = nome;
+    }
+}
+int main(){
+    Pessoa p1;
+    p1.getObjeto().setObjeto("Zé");
+}
+```
+
+- Retornando o conteúdo que 'this' aponta, que é a própria instância da Classe, eu posso chamar métodos em cadeia.
