@@ -379,7 +379,7 @@ delete[] vec; // Libero memória que não será mais utilizada
 
 # Atribuir valores para uma instância de Classe: qual utilizar?
 
-Existem 3 principais formas de atribuir valores a uma instância de uma classe.
+Existem 3 principais formas de atribuir valores a atributos de uma classe.
 
 ## Atribuição 1: Padrão
 
@@ -391,7 +391,24 @@ pessoa1.idade = 20;
 
 - Ao declarar e inicializar um objeto normal e cru, você está declarando algo que só funcionará naquele escopo {} específico. Ou seja, **quando o escopo acabar, o objeto não existirá mais**. É basicamente alocada uma memória temporária e estática na pilha pra guardar o objeto que se perderá em breve.
 
-## Atribuição 2: Dois ponteiros apontando pro mesmo lugar
+## Atribuição 2: Ponteiro apontando para um só objeto
+
+```cpp
+Pessoa* pessoa3 = new Pessoa;
+pessoa3->nome = "Carlos";
+pessoa3->idade = 31
+delete pessoa3;
+```
+
+- Ao instanciar na heap, o objeto pode ser acessado dentro e fora de classes, funções, métodos, na função main, por outros arquivos... e todos os seus atributos também poderão ser utilizados. O problema disso é o risco de se criar inúmeros objetos da mesma Classe, e como eles não são apagados automaticamente, pode ocorrer um Memory Leak e consumo excessivo de RAM enquanto o programa estiver rodando.
+
+![image](https://user-images.githubusercontent.com/98990221/197656441-91f55da2-9450-407b-a6c1-836162423b14.png)
+
+- Em linguagens como Python e Java, ao instanciar um objeto, todos os atributos daquele objeto são passados por referência através do "self" ou "this" de forma automática, sem precisar usar ponteiros para isso. Por isso é possível criar estrutura de dados nessas linguagens, mesmo elas não utilizando ponteiros na sintaxe, pois ela tem ponteiros implicitos. As linguagens mais avançadas já entendem que certas coisas devem passadas por cópia, e outras por referência sem precisar explicitar o asterisco ou ampersand.
+
+> Nota: Normalmente outras linguagens mais modernas, como já falado antes, já fazem por referência, só que utilizando o '.' ao invés do '->'. Já no C++, o '.' é de fato feito sobre uma cópia, enquanto que em Java ou Python, o '.' é algumas vezes feito sobre uma referência, principalmente dentro de Classes sobre a keyword "this/self".
+
+## Atribuição 3: Dois ponteiros apontando pro mesmo objeto
 
 ```cpp
 Pessoa* p2; // Isso não é instanciação!
@@ -421,23 +438,6 @@ p2->idade = 18;
 ```
 
 - Esse é o segundo caso. Já foi exeemplificado no tópico *Instanciação com ponteiros - Estática*.
-
-## Atribuição 3: Ponteiro apontando 
-
-```cpp
-Pessoa* pessoa3 = new Pessoa;
-pessoa3->nome = "Carlos";
-pessoa3->idade = 31
-delete pessoa3;
-```
-
-- Ao instanciar na heap, o objeto pode ser acessado dentro e fora de classes, funções, métodos, na função main, por outros arquivos... e todos os seus atributos também poderão ser utilizados. O problema disso é o risco de se criar inúmeros objetos da mesma Classe, e como eles não são apagados automaticamente, pode ocorrer um Memory Leak e consumo excessivo de RAM enquanto o programa estiver rodando.
-
-![image](https://user-images.githubusercontent.com/98990221/197656441-91f55da2-9450-407b-a6c1-836162423b14.png)
-
-- Em linguagens como Python e Java, ao instanciar um objeto, todos os atributos daquele objeto são passados por referência através do "self" ou "this" de forma automática, sem precisar usar ponteiros para isso. Por isso é possível criar estrutura de dados nessas linguagens, mesmo elas não utilizando ponteiros na sintaxe, pois ela tem ponteiros implicitos. As linguagens mais avançadas já entendem que certas coisas devem passadas por cópia, e outras por referência sem precisar explicitar o asterisco ou ampersand.
-
-> Nota: Normalmente outras linguagens mais modernas, como já falado antes, já fazem por referência, só que utilizando o '.' ao invés do '->'. Já no C++, o '.' é de fato feito sobre uma cópia, enquanto que em Java ou Python, o '.' é muitas vezes feito sobre uma referência.
 
 # Pilha (Stack) vs Heap na RAM (Random Access Memory)
 
