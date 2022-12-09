@@ -23,7 +23,8 @@ public:
 class Pessoa
 {
 public:
-    Pessoa() { std::cout << "Fui executado" << std::endl; } // Construtor
+    int x;
+    //Pessoa() { std::cout << "Fui executado" << std::endl; } // Construtor
 };
 
 
@@ -31,10 +32,13 @@ using std::string;
 
 int main()
 {
-    string a = "Ola";
+    Pessoa p;
+    Pessoa* e = &p;
+    
+    e->x = 10;
+    (*e).x = 5;
     // const char* nome = "Palio";
     // Car carro = Car("Palio", 18);
     // print(carro.nome);
-    print(a);
 
 }

@@ -48,7 +48,7 @@ int b = a; // 'b' copia 'a' (ou 'b' recebe 'a'). Agora b = 10.
 
 ## Referência
 
-Uma variável é referenciada quando usa *ampersand &* e atrubi o valor capturado com o operador *&* a uma outra variável do tipo ponteiro que aponta pra inteiro - int*. Esse tipo só aceita endereços e nada mais, que é um tipo especial de valor, e por isso que ele pode receber variáveis com &. Esse conceito já foi discutido no **README.md**.
+Uma variável é referenciada quando usa o **operador** *ampersand &* e atrubi o valor com o operador *&* a uma outra variável do tipo ponteiro que aponta pra inteiro - int*. Esse tipo só aceita endereços e nada mais, que é um tipo especial de valor, e por isso que ele pode receber variáveis com &. Esse conceito já foi discutido no **README.md**.
 
 ```cpp
 int a = 10;
@@ -98,19 +98,58 @@ Relembrando que d aponta indiretamente para a, é possível acessar o conteúdo 
 
 Ao printar ***d, resultará no valor 10. Ao printar **d, resultará no endereço de 'a', que é o conteúdo de b. E obviamente, ao printar *d, resulta no conteúdo de c.
 
+## Construtor
+
+Construtor é um método especial de uma Classe que define os principais atributos de um objeto (instância) criado dessa Classe. Como dito anteriormente, é recomendado entender POO para compreender mais os tópicos que vem adiante.
+
+```cpp
+class Pessoa{
+public:
+    Pessoa(){} // Construtor
+}
+```
+
+O construtor (e destrutor) levam o mesmo nome da Classe, e por não terem objetivo de retornarem algo, não precisam de um tipo específico.
+
+Construtores em C++, diferente de outras linguagens com foco mais pesado em POO, como Python e Java, não aparecem em tipos primitivos de dados, como **int**, **float** e **char**, devido a herança do C, porém algo "parecido" existe:
+
+```cpp
+int valor(10); // Exemplo de "construtor" de um int.
+```
+
+> Nota: isso não é construtor, é uma inicialização, mas é como se fosse um construtor.
+
+Construtor aparece de fato em objetos que possuem tipo não-primitivo de dados. Ou seja, em Classes criadas pelo programador.
+
+```cpp
+class Pessoa{
+public:
+    Pessoa(){} // Construtor
+}
+
+int main(){
+    Pessoa p; // Automaticamente chama o construtor.
+    Pessoa p(); // Forma alternativa de chamar o construtor.
+    Pessoa p = Pessoa(); // Outra forma alternativa.
+}
+```
+
+> Nota: se o objeto não possuir construtor escrito na classe, o C++, em tempo de compilação, cria um método construtor vazio no momento que vê a declaração **Pessoa p**. Pois ao declarar um objeto com tipo não primitivo de dado (Pessoa), o compilador também aloca memória (estática em compilação na pilha, dinâmica em execução na heap) para esse objeto. Declarar um objeto (lvalue) como tipo primitivo de dado não aloca memória. Tudo isso será abordado mais abaixo.
 
 ## Declarar
 
-Basicamente é só pra dizer para o compilador que o objeto existe e será usado depois. Basicamente prepara espaço na memória para um futuro recebimento de um valor.
+Basicamente é só pra dizer para o compilador que o objeto existe, é único e poderá ser usado depois.
+
+No caso de declaração de objetos de uma Classe (tipo não-primitivo de dado), o compilador trata isso automaticamente como instanciação de uma classe (será mais detalhado abaixo), e esse é o único caso onde é feito um preparo no espaço da memória junto com declaração. Declaração de tipos primitivos reservam espaço na memória apenas ao inicializar valores.
 
 ```cpp
-int a; // Declaração trivial
-int* b; // Declaração de ponteiro pra algum inteiro na memória
+int a; // Declaração trivial. Não aloca memória.
+int* b; // Declaração de ponteiro pra algum inteiro na memória. Não aloca memória.
 int& c; // ERRO: apesar de que dá pra fazer isso com parâmetro de funções.
-int f(int a); // Declaração de função que retorna um tipo inteiro
-class Pessoa; // Declaração de classe
-Pessoa person; // Declaração de um objeto.
-int z = int(); // Declaração não convencional, com parênteses vazio (construtor).
+int f(int a); // Declaração de função que retorna um tipo inteiro. Não aloca memória.
+class Pessoa; // Declaração de classe. Não aloca memória.
+Pessoa person; // Declaração de um objeto de uma classe Pessoa. Também é uma instanciação. Aloca memória estática na pilha.
+int z = int(); // Declaração não convencional, com parênteses vazio ("construtor"). Não aloca memória.
 ```
 
 > Nota: o caso 'int z() = int();' fará mais sentido logo abaixo.
@@ -122,15 +161,15 @@ Inicializar é o ato de atribuir um primeiro valor a uma variável já declarada
 
 ```cpp
 int a; // Declaração
-a = 10 // Inicialização
+a = 10 // Inicialização. É alocada memória estática na pilha.
 int* b; // Declaração
-b = &a; // Inicialização
+b = &a; // Inicialização. É alocada memória estática na pilha.
 int** c = &b; // Declaração e inicialização. Aqui c aponta pra b, e b aponta pra a.
 
 
-int* x; // Declaração
-x = new int(22); // Inicialização
-int* y = new int(15); // Declaração e inicialização
+int* x; // Declaração. Não aloca memória.
+x = new int(22); // Inicialização. É alocada memória estática na pilha e memória dinâmica na heap.
+int* y = new int(15); // Declaração e inicialização. É alocada memória estática na pilha e memória dinâmica na heap.
 ```
 
 > Nota: o uso do **new** e a alocação dinâmica de memória serão detalhados mais abaixo.
@@ -138,8 +177,9 @@ int* y = new int(15); // Declaração e inicialização
 Além disso, existem diversos outras formas de inicializar e declarar variáveis:
 
 ```cpp
-int valor(10); // Declaração e inicialização. Desaconselhado o uso.
-int valor = int(10); // Declaração e inicialização. Apenas não convencional.
+int valor(10); // Declaração e inicialização. Desaconselhado o uso. Aloca memória estática na pilha.
+int valor = int(10); // Declaração e inicialização. Apenas não convencional. Aloca memória estática na pilha.
+Pessoa person = Pessoa(); // Declaração e inicialização. Aloca memória estática na pilha.
 ```
 
 - Perceba que uso um "construtor" que passa 10 pro 'valor'. São formas alternativas de inicializar, equivalentes a *'int valor = 10'*, e as duas estão corretas e fazem a mesma coisa.
@@ -148,7 +188,7 @@ int valor = int(10); // Declaração e inicialização. Apenas não convencional
 
 Em POO, normalmente as Classes são tratadas como tipo de variável criado pelo próprio programador, o que não deixa de ser verdade. Mas o contrário não ocorre em C++, pois nem todo tipo de variável é uma Classe. Porém, isso ocorre em Python, Java, etc. 
 
-Por exemplo, *int* em Python ou Java é considerada uma Classe que possui vários métodos internos para manipular esses valores. Já em C++, *int* ainda é um tipo primitivo de dado herdado do C. Portanto, considerar *int* como Classe em C++ é errado na teoria. Mas na prática, se pensarmos assim, facilita o entendimento da criação de objetos e do uso de construtores diretamente sobre o tipo primitivo de dado.
+Por exemplo, *int* em Python ou Java é considerada uma Classe que possui vários métodos internos para manipular esses valores. Já em C++, *int* ainda é um tipo primitivo de dado herdado do C. Portanto, considerar *int* como Classe em C++ é errado na teoria. Mas na prática, se pensarmos assim, facilita o entendimento da criação de objetos e do uso de "construtores" diretamente sobre o tipo primitivo de dado.
 
 
 ## Atribuir (assignment)
@@ -187,26 +227,26 @@ Instanciar é criar um objeto de uma Classe específica. Quando dizemos "instanc
 class Pessoa{
 };
 
-int valor; // Instanciação de uma "classe" int.
-Pessoa p1; // Instanciação de uma classe Pessoa.
-Pessoa* p2 = new Pessoa(); // Instanciação de uma classe Pessoa.
+int valor; // "Instanciação" de uma "classe" int. Não aloca memória.
+Pessoa p1; // Instanciação de uma classe Pessoa. Aloca memória estática na pilha.
+Pessoa* p2 = new Pessoa(); // Instanciação de uma classe Pessoa. Aloca memória dinâmica na heap.
 ```
 
+> Nota: A partir de agora, para os exemplos com uso de Classes, suponha que todas as Classes apresentadas nos exemplos tenham atributos e métodos funcionais e fictícios pré-definidos e preenchidos no escopo. Não irei colocar o código completo de uma Classe, pois isso iria ficar massante, e a ideia é simplificar a explicação e ir direto ao ponto. Portanto, os códigos abaixo são hipotéticos e, por motivos óbvios, não irão funcionar em um programa real.
 
 ### Instanciação sem ponteiros
 
 A instanciação sem uso de ponteiros envolve você simplesmente declarar o objeto, e ao inicializar seus atributos, os dados são alocados na Pilha da memória da RAM, que possui aproximadamente 2MB.
 
-> Nota: Para os exemplos com uso de Classes, suponha que todas as Classes apresentadas tenham atributos e métodos funcionais pré-definidos e preenchidos no escopo. Não irei colocar o código completo de uma Classe, pois isso iria ficar massante, e a ideia é simplificar a explicação e ir direto ao ponto. Portanto, os códigos abaixo são hipotéticos e, por motivos óbvios, não irão funcionar em um programa real.
 
 ```cpp
 class Pessoa{}; // Suponha que essa classe esteja completa, com atributos e métodos.
 Pessoa p1; // Prepara espaço estático na pilha dizendo pro compilador que existe p1.
-p1.nome = "Zé" // Aloca dados nesse espaço criado na pilha
+p1.nome = "Zé" // Joga dados nesse espaço criado na pilha
 p1.correr(5) // Executa o método 'correr' 5km/h.
 
-int valor; // Prepara espaço estático na pilha
-valor = 10; // Aloca dados nesse espaço criado na pilha.
+int valor; // Não há preparo de espaço na pilha, apenas diz pro compilador que existe.
+valor = 10; // Aloca dados nesse espaço criado na pilha e joga 10 para o espaço alocado.
 ```
 
 Existem diversas formas de instanciar uma Classe.
@@ -233,32 +273,45 @@ int main(){Pessoa p1;} // Executa o construtor mesmo declarando
 > Output: Fui executado
 
 
-### Instanciação com ponteiros
+### Instanciação com ponteiros - Estática
 
-A instanciação com ponteiros envolve alocar espaço na Heap e retornar um ponteiro para aquele local alocado dentro da Heap. A heap fica localizada também na memória RAM, e seu espaço é ilimitado até a RAM estourar. Esse espaço alocado é permanente e não encerra após o término de uma função. Ou seja, pode ser acessado fora do escopo dela.
+
+
+### Instanciação com ponteiros - Dinâmica
+
+A instanciação com ponteiros de forma dinâmica envolve alocar espaço na Heap e retornar um ponteiro para aquele local alocado dentro da Heap. A heap fica localizada também na memória RAM, e seu espaço é ilimitado até a RAM estourar. Esse espaço alocado é permanente e não encerra após o término de uma função. Ou seja, pode ser acessado fora do escopo dela.
 
 > Nota: falo sobre armazenamento em Pilha e Heap no último tópico desse arquivo. Por hora, basta saber que inicializar qualquer coisa estática é alocar memória na Pilha, e inicializar qualquer coisa dinâmica é alocar memória na Heap.
 
 ```cpp
 int* obj = (int*)malloc(sizeof(int)); // C
-int* obj = new int; // C++
-int* obj = new int() // C++, parênteses opcional
-int* obj = new int(5);
 ```
 
-- Os dois casos de C e C++ acima são equivalentes, exceto que o **new** executa o "construtor" de *int* (ou de qualquer Classe). 
+```cpp
+int* obj = new int; // C++
+int* obj = new int() // C++, parênteses opcional
+int* obj = new int(5); // Inicialização
+```
 
-- O primeiro caso é usado em C, que inclui um casting pra int* de um ponteiro que aponta para uma memória alocada do tamanho de um inteiro (4 bytes). malloc() retorna um ponteiro do tipo void*, e o casting para int* serve justamente para que esse ponteiro possa apontar pra um inteiro bem definido. E o obj, por ser um ponteiro, pode receber o mesmo endereço que malloc retornou, ou seja, obj agora aponta pra esse mesmo objeto inteiro anônimo que foi criado pelo malloc.
+- Os dois casos de C e C++ acima são equivalentes.
 
-- O segundo é usado em C++, que simplifica mais esse processo sem necessidade de casting, pois já faz tudo por trás, com o operador **new**. Ambos são alocações dinâmicas de memória e fazem exatamente a mesma coisa. Só que o **new** tem como função extra executar o construtor de uma Classe.
+
+- O primeiro caso é usado em C, que inclui um casting pra int* de um ponteiro que aponta para uma memória alocada do tamanho de um inteiro (4 bytes). malloc() retorna um ponteiro do tipo void*, que aponta para o endereço onde a memória foi alocada, e o casting para int* serve justamente para que esse o compilador saiba para que tipo de dado esse ponteiro aponta. E o obj, por ser um ponteiro, pode receber o mesmo endereço que malloc retornou, ou seja, obj agora aponta pra esse mesmo objeto inteiro anônimo que foi criado pelo malloc.
+
+- O segundo caso é usado em C++, que simplifica mais esse processo sem necessidade de casting, pois já faz tudo por trás, com o operador **new**. Ambos são alocações dinâmicas de memória e fazem exatamente a mesma coisa.
 
 - O terceiro e quarto caso são para mostrar que você pode usar um "construtor" da "Classe" *int* pra passar o valor 5 (ou nada). Ou seja, o conteúdo de obj (*obj) terá valor 5. 'obj' por si só recebe um endereço, que é o endereço de onde está localizado esse novo inteiro. 'obj' é um ponteiro para um inteiro (inicialmente lixo), recebe um endereço de outro objeto int, e a partir daí passa a apontar para esse inteiro anônimo criado na memória, do tipo int e com valor 5.
 
-> Lê-se: *obj* é um tipo ponteiro que aponta pra um tipo int anônimo na memoria (int*), geralmente lixo. Ao "igualar" a um novo inteiro, o *obj* recebe o mesmo endereço desse novo (new) objeto do tipo inteiro (int) criado, e com atributos devidamente alocados (5, métodos da classe int, etc). Lembrando que new retorna um endereço do tipo void* (pq ele precisa apontar pra qualquer tipo de memória alocada inicialmente), e é feito um casting automático para int*.
+> Lê-se: *obj* é um tipo ponteiro para um inteiro que aponta pra um tipo int anônimo na memoria (int*), geralmente lixo. Ao "igualar" a um novo inteiro, o *obj* recebe o mesmo endereço desse novo (new) objeto do tipo inteiro (int) criado, e com atributos devidamente alocados (5, métodos da classe int, etc). Lembrando que new retorna um endereço do tipo void* (pq ele precisa apontar pra qualquer tipo de memória alocada inicialmente), e é feito um casting automático para int*.
 
 ```cpp
 Pessoa* pessoa = (Pessoa*)malloc(sizeof(Pessoa)); // C
-Pessoa* pessoa = new Pessoa(); // C++
+pessoa->Pessoa() // Construtor
+```
+
+```cpp
+// C++. Faz a mesma coisa das duas linhas de código acima.
+Pessoa* pessoa = new Pessoa(); // Pessoa() é o construtor.
 ```
 
 - Uso de class ou struct para instanciar objetos. O uso dos parênteses em Pessoa() é opcional desde que não precise passar nada pelo construtor.
@@ -278,7 +331,6 @@ char* vec = new char[100]; // Vetor de tamanho 100
 void* ptr_coringa = malloc(sizeof(int));
 int* ptr_pra_int = (int*)ptr_coringa;
 ```
-
 
 ## Liberar (desalocar)
 
