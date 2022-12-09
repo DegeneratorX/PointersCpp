@@ -314,6 +314,8 @@ pessoa->Pessoa() // Construtor
 Pessoa* pessoa = new Pessoa(); // Pessoa() é o construtor.
 ```
 
+#PAREI AQUI
+
 - Uso de class ou struct para instanciar objetos. O uso dos parênteses em Pessoa() é opcional desde que não precise passar nada pelo construtor.
 - pessoa é um ponteiro do tipo Pessoa* que passa a apontar para um objeto criado e alocado na memória do tipo Pessoa.
 
