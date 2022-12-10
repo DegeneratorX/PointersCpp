@@ -154,8 +154,14 @@ Existem algumas formas de alocar arrays. Na pilha e na heap.
 
 ## std::string
 
+# Arrays Multidimensionais
+
 # Arrays e Funções
 
 ## Arrays como parâmetro de funções
 
 ## Arrays como retorno de funções
+
+# Smart Pointers
+
+# Entendido arrays...
