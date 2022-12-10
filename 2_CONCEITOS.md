@@ -571,3 +571,8 @@ int main(){
 ```
 
 - Retornando o conteúdo que 'this' aponta, que é a própria instância da Classe, eu posso chamar métodos em cadeia.
+
+# Entendido o básico de conceitos...
+
+Fiz um documento sobre arrays, e como ponteiros e arrays são tão parecidos, ao mesmo tempo diferentes.
+Leia o arquivo **ARRAY.md**.
