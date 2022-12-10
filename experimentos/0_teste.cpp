@@ -36,6 +36,10 @@ public:
     }
 };
 
+void* funcao(int x){
+    return x;
+}
+
 
 using std::string;
 
