@@ -48,7 +48,7 @@ Abordarei aqui sobre linking, namespace, outros arquivos .cpp, .h, #include, mai
 
 # Static
 
-A keyword **static** é peculiar, pois possui diversos comportamentos dependendo de como ela é utilizada.
+A keyword **static** é peculiar, pois possui diversos comportamentos dependendo de como ela é utilizada. Para todo uso de **static**, é feita uma alocação estática de memória. Alguns casos específicos sem o uso da keyword (como variáveis em namespaces) também alocam estaticamente, como já foi falado em CONCEITOS.md.
 
 Existem 4 tipos de usos principais para **static**
 
@@ -76,7 +76,7 @@ O que acontece aqui é que o x não irá resetar para 0 quando a função for ch
 
 O espaço alocado para entidades estáticas fica no armazenamento estático na RAM, e o espaço é alocado pelo linker logo antes do programa ser executado. Ou seja, a alocação estática de memória ocorre em tempo de compilação. Sempre é memorizada a variável mesmo depois de indefinidos call stacks, e previne uma reinicialização dela. Ou seja, uma variável estática só é inicialziada uma vez. Outras inicializações serão ignoradas.
 
-A variável com static dura até o programa encerrar, e não é possível deletar. Sem static, x seria deletado assim que encerrasse o escopo da função. E para cada print, printaria 0, 0 e 0 ao invés de 0, 1 e 2.
+A variável com static dura até o programa encerrar, e não é possível deletar. Sem static, x seria guardado na pilha e deletado assim que encerrasse o escopo da função. E para cada print, printaria 0, 0 e 0 ao invés de 0, 1 e 2.
 
 ## Static em variável global ou função
 
@@ -90,7 +90,7 @@ int main(){
 }
 ```
 
-'x' será visível por todo o programa, mas não será visível por outros arquivos. Ou seja, ficará somente visível dentro da translation unit. O mesmo vale pra função print(). É como se fosse declarar uma variável "private" para outros arquivos não poderem ter acesso a ela. Sem static, x ou print() passam a serem utilizáveis por qualquer outro arquivo.
+'x' será visível por todo o programa, mas não será visível por outros arquivos. Ou seja, ficará somente visível dentro da translation unit. O mesmo vale para a função print(). É como se fosse declarar uma variável "private" para outros arquivos não poderem ter acesso a ela. Sem static, x ou print() passam a serem utilizáveis por qualquer outro arquivo da build.
 
 A variável também dura na memória até o programa encerrar.
 

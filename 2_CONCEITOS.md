@@ -8,6 +8,8 @@ Requisitos para entender esse arquivo:
 - Ler o arquivo README.md nesse rep
 
 
+# Conceitos
+
 ## lvalue
 
 lvalue é um objeto que é identificado na memória e capaz de armazenar dado. Pode aparecer tanto no lado esquerdo quanto lado direito da expressão, e pode existir ao longo da execução do programa.
@@ -142,10 +144,10 @@ int main(){
 
 O ato de alocar significa preparar um bloco de memória específico na memória RAM para depois jogar dados lá.
 
-Existe quatro tipos de alocações:
-- De código (separada, existe até o programa encerrar)
+Existem quatro tipos de alocações:
+- De código (a parte, existe até o programa encerrar)
 - Automática (na pilha, temporária no escopo)
-- Estática (separada, existe até o programa encerrar)
+- Estática (na data segment e bbs segment, existe até o programa encerrar)
 - Dinâmica (na heap, existe até o programa encerrar, deletável em tempo de execução)
 
 ![image](https://user-images.githubusercontent.com/98990221/206921825-6f1813c4-3f3b-4d05-bafb-5747081a57b0.png)
@@ -156,14 +158,14 @@ Existe quatro tipos de alocações:
 
 *source: https://www.geeksforgeeks.org/memory-layout-of-c-program/*
 
-### Alocação do Código
+### Alocação do Código (code segment)
 
-Alocar memória para o código é apenas reservar o espaço necessário para as instruções do executável (linguagem de máquina).
+A alocação de memória para o código é feita em tempo de compilação no **code segment** que fica no próprio executável (object file). Reserva o espaço necessário para as instruções de máquina (linguagem de máquina). Possui armazenamento fixo e no geral é read-only. Morre assim que o programa termina.
 
 
-### Alocação Automática
+### Alocação Automática (call stack segment)
 
-A alocação automática de memória é feita na pilha dentro da memória RAM. É temporária e morre assim que acaba um escopo.
+A alocação automática de memória é feita em tempo de execução em uma **pilha** (também chamada de **call stack**) na **stack segment** dentro da memória RAM. É um espaço para guardar variáveis com tempo de vida que duram um escopo. Possui armazenamento fixo. Morre assim que acaba o escopo (pop).
 
 ```cpp
 {
@@ -176,14 +178,17 @@ cout << a << ", " << p << endl; // printará lixo em a e p. Memória "destruída
 > Nota: isso será aprofundado no tópico sobre Pilhas e Heap.
 
 
-### Alocação Estática (data segment)
+### Alocação Estática (data segment e bbs)
 
-A alocação estática de memória é feita pelo linker. Ou seja, é alocado em tempo de compilação. É um tipo de alocação menos importante, mais complexa e será abordada melhor em ARQUIVOS.md. 
+A alocação estática de memória é feita em tempo de compilação (pelo linker) em um local chamado **data and bbs segment**, que fica no próprio executável (object file). Reserva o espaço necessário para armazenar as variáveis estáticas, com tempo de vida que duram a execução toda do programa. Possui armazenamento fixo. Morre quando o programa encerra. 
 
-A memória alocada estaticamente (também chamada de data segment) armazena qualquer variável definida em um namespace ou no namespace global (que é um namespace implícito), seja usando a keyword **static** ou não. Já dentro de funções ou classes, é obrigatório o uso da **static** para alocar na data segment, caso contrário será automática (na pilha). A alocação estática é permanente e dura até o fim do programa.
+> Nota: É um tipo de alocação menos importante, mais complexa e será abordada melhor em ARQUIVOS.md. 
+
+A região armazena qualquer entidade declarada em um namespace ou no namespace global (que é um namespace implícito), seja usando a keyword **static** ou não. Já dentro de funções ou classes, é obrigatório o uso da **static** para alocar na data and bbs segment, caso contrário será automática (na pilha). A alocação estática é permanente e dura até o fim do programa.
 
 ```cpp
 int a; // Está no namespace Global. Alocação estática.
+static int z; // Está no namespace Global. Alocação estática.
 namespace Exemplo{
     int b; // Alocação estática.
     void imprimir(){
@@ -199,7 +204,7 @@ int main(){
 }
 ```
 
-> Nota: A memória estática é subdividida em duas: memória estática inicializada e memória estática não inicializada (bbs), e estão em dois subblocos diferentes.
+> Nota: A memória estática é subdividida em duas: memória estática inicializada (data segment) e memória estática não inicializada (bbs segment), e estão em dois subblocos diferentes.
 
 ```cpp
 // namespace Global
@@ -220,14 +225,16 @@ No momento que a = 10, a alocação estática não inicializada para 'a' é dele
 > Nota: por hora basta saber que dentro de namespaces **utilizando ou não static** ou dentro de funções e classes **utilizando 'static'**, as entidades serão alocadas estaticamente na memória. O uso da keyword **static** é mais complexo e será aprofundado em ARQUIVOS.md.
 
 
-### Alocação Dinâmica
+### Alocação Dinâmica (heap segment)
 
-A alocação dinâmica de memória é feita numa heap dentro da memória RAM. É permanente e só morre quando o programador quiser.
+A alocação dinâmica de memória é feita em tempo de execução numa heap na **heap segment** dentro da memória RAM. É um espaço para guardar variáveis com tempo de vida que o programador define. Possui armazenamento dinâmico (tamanho da RAM). Morre assim que o programador usar a keyword *delete*, ou seja, quando o programador quiser.
 
 ```cpp
 int* a = new int();
+delete a;
 ```
 - *new int()* é um objeto anônimo alocado em uma memória dinâmica na heap. 'a' é um ponteiro na pilha que aponta pra esse objeto para não se perder.
+- *delete a* é uma operação feita sobre o conteúdo para o qual 'a' aponta, que é a liberação de memória desse 'new int' na heap (deletar).
 
 > Nota: isso será aprofundado mais pra frente e no tópico sobre Pilhas e Heap.
 
@@ -281,7 +288,7 @@ void print(); // Declaração apenas. Nada definido. Não aloca memória.
 void print(){} // Deckaralçai e definição. Aloca memória estática.
 ```
 
-No momento que se utiliza {}, ocorre a definição de uma classe ou função.
+No momento que se utiliza *{}*, ocorre a definição de uma classe ou função.
 
 
 ## Inicializar

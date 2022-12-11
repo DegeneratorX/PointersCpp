@@ -141,7 +141,7 @@ E obviamente é preciso acessar o conteúdo desse endereço através do operador
 
 # Alocação de arrays
 
-Existem algumas formas de alocar espaço para arrays. Na pilha e na heap.
+Existem algumas formas de alocar espaço para arrays. Na **pilha** e na **heap** são as principais. Alocação na **data signature** também é possível, mas é mais uma derivação
 
 
 ## Alocação de arrays na Pilha
