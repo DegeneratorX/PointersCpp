@@ -243,14 +243,14 @@ No caso de declaração de objetos de uma Classe (tipo não-primitivo de dado), 
 int f(int a); // Declaração de função que retorna um tipo inteiro. Não há definição, portanto não aloca memória
 class Pessoa; // Declaração de classe. Não há definição, portanto não aloca memória.
 
-int k; // Declaração em namespace Global. É também definição, aloca memória estática.
+int k; // Declaração em namespace Global. É também definição, e portanto aloca memória (estática).
 
 int main(){
     int a; // Declaração trivial (e definição). Aloca memória automática.
-    int* b; // Declaração de ponteiro pra algum inteiro na memória. Aloca memória automática.
+    int* b; // Declaração (e definição) de ponteiro pra algum inteiro na memória. Aloca memória automática.
     int& c; // ERRO: apesar de que dá pra fazer isso com parâmetro de funções.
-    Pessoa person; // Declaração de um objeto da classe Pessoa. Também é uma instanciação. Aloca memória automática.
-    int z = int(); // Declaração não convencional, com parênteses vazio ("construtor"). Aloca memória automática.
+    Pessoa person; // Declaração (e definição) de um objeto da classe Pessoa. Também é uma instanciação. Aloca memória automática.
+    int z = int(); // Declaração (e definição) não convencional, com parênteses vazio ("construtor"). Aloca memória automática.
 }
 ```
 
@@ -263,6 +263,7 @@ Toda definição é uma declaração. Toda definição aloca espaço na memória
 
 ```cpp
 int x; // Definição (e declaração). Alocação estática. Inicializada com lixo.
+static int z; // Definição (e declaração). Alocação estática. Inicializa com lixo.
 int main(){
     int a; // Definição. Alocação automática. Inicializada com lixo.
     int* b; // Definição. Alocação automática. Inicializada com lixo.
