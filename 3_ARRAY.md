@@ -36,6 +36,7 @@ int arr[n]; // Qual será o tamanho do array. (nesse caso 10)
 
 Existem diversas outras formas de declarar e representar arrays. Todas essas formas serão discutidas.
 
+
 # Bibliotecas alternativas para arrays (estrutura de dados)
 
 Em C++ os programadores utilizam bastante bibliotecas que tentam trabalhar com estrutura de dados de forma mais segura, com pouco impacto na performance em tempo de execução. Por convenção se usam mais bibliotecas do C++, para evitar o uso de heranças do C que podem causar dores de cabeça. Essas bibliotecas são padrões da STL (Standard Template Library) e estão na categoria de Containers.
@@ -84,6 +85,7 @@ Irei detalhar apenas os mais importantes pra falar sobre arrays.
 - A biblioteca **string** permite usar a classe *std::string* do C++ para facilitar a declaração de um array de caracteres. É um imprescindível substituto do tipo primitivo *'const char*'*, que é basicamente a "string" do C, além de ter vários métodos built-in e muita compatibilidade com outras bibliotecas. 
 
 Apesar do uso expressivo da classe std::string, o const char* será muito detalhado nesse arquivo.
+
 
 # Arrays e Ponteiros
 
@@ -136,13 +138,15 @@ E obviamente é preciso acessar o conteúdo desse endereço através do operador
 
 > Nota: o uso do [] é obrigatório para definir o tamanho do array no momento da declaração ou inicialização (exceto para strings, detalhes depois). Ele não é um operador nesses momentos citados, muito menos açúcar sintático. Porém, ao acessar valores do array usando índices dentro dos colchetes, [] se torna um operador. Seu uso é opcional, podendo ser substituído pelo operador de derreferência '*'.
 
-# Alocação
 
-Existem algumas formas de alocar arrays. Na pilha e na heap.
+# Alocação de arrays
 
-## Alocação na Pilha
+Existem algumas formas de alocar espaço para arrays. Na pilha e na heap.
 
-## Alocação na Heap
+
+## Alocação de arrays na Pilha
+
+## Alocação de arrays na Heap
 
 # char VS char* VS const char* VS std::string
 

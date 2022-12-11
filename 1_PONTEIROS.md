@@ -351,6 +351,44 @@ void* f(void* x){cout << x << endl; return x;} // Caso 2: OK
 
 > Nota: o uso de void* em C++ não é muito comum, pois foi introduzida na linguagem o conceito de templates, que basicamente criam funções em tempo de execução para cada tipo de dado passado e são muito mais eficientes que o uso de void*. template, using, std::string, class e new são alguns exemplos de features do C++ que substituiram bem heranças do C, sendo respectivamente void*, typedef, const char*, struct e malloc().
 
+
+## E o 'this'?
+
+A keyword **this** nada mais é do que um ponteiro para a própria instância da Classe. No construtor muitas vezes é utilizado pra não gerar conflito com parâmetros passados, pois ele pode levar o mesmo nome do atributo da instância atual.
+
+```cpp
+class Pessoa{
+    int nome;
+    int idade;
+    Pessoa(string nome, int idade){
+        this->nome = nome;
+        (*this).idade = idade; // idade = idade sem o 'this' seria redundante e bizarro.
+    }
+}
+```
+
+- Perceba que eu acesso o conteúdo de 'this' (*this), que é a própria instância, e passo o valor do campo "nome" e "idade" (que estão private).
+
+```cpp
+class Pessoa{
+    int nome;
+public:
+    Pessoa getObjeto(){
+        return (*this);
+    }
+    string setObjeto(string nome){
+        (*this).nome = nome;
+    }
+}
+int main(){
+    Pessoa p1;
+    p1.getObjeto().setObjeto("Zé");
+}
+```
+
+- Retornando o conteúdo que 'this' aponta, que é a própria instância da Classe, eu posso chamar métodos em cadeia.
+
+
 # Entendido o básico de ponteiros...
 
 Fiz um documento sobre conceitos mais utilizados na programação, e como ponteiros participam desses conceitos.
