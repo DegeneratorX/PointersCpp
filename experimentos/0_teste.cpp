@@ -6,8 +6,6 @@ using std::cin;
 using std::cout;
 using std::endl;
 
-#define print(x) cout << x << endl;
-
 class Car
 {
 
@@ -21,29 +19,29 @@ public:
     }
 };
 
-class Pessoa
-{
+class Pessoa{
 public:
-    int x;
-    //Pessoa() { std::cout << "Fui executado" << std::endl; } // Construtor
-    Pessoa* getX()
-    {
-        return this;
-    }
-    
-    int setX(int x){
-        this->x = x;
+    static int x;
+    static void print(){
+        cout << x << endl;
     }
 };
-
-void* funcao(int x){
-    return x;
-}
-
+int Pessoa::x;
 
 using std::string;
 
+extern void teste();
+
 int main()
 {
-    int* array;
+    Pessoa p;
+    p.x = 10;
+    p.print();
+
+    Pessoa p2;
+    p2.x = 20;
+    p.print();
+
+    teste();
+
 }
