@@ -135,7 +135,7 @@ int main(){
 }
 ```
 
-> Nota: se o objeto não possuir construtor escrito na classe, o C++, em tempo de compilação, cria um método construtor vazio no momento que vê a declaração **Pessoa p**. Pois ao declarar um objeto com tipo não primitivo de dado (Pessoa), o compilador também aloca memória (estática em compilação na pilha, dinâmica em execução na heap) para esse objeto. Declarar um objeto (lvalue) como tipo primitivo de dado não aloca memória. Tudo isso será abordado mais abaixo.
+> Nota: se o objeto não possuir construtor escrito na classe, o C++, em tempo de compilação, cria um método construtor vazio no momento que vê a declaração **Pessoa p**.
 
 
 ## Alocar
@@ -317,7 +317,7 @@ int main(){
 
 - Perceba que uso um "construtor" que passa 10 pro 'valor'. São formas alternativas de inicializar, equivalentes a *'int valor = 10'*, e as duas estão corretas e fazem a mesma coisa.
 
-> Nota: o primeiro caso pode ser confundido com uma função, e portanto seu uso não é convencional e é desaconselhado. Porém, o compilador sabe a diferença. Se não tiver escopo {} e for passado **rvalues** diretamente, é uma variável estática sendo inicialziada. Caso contrário, é uma declaração de função. Não é possível apenas declarar dessa forma, por exemplo, apenas colocando 'int valor();', pois nesse caso o compilador entende como declaração de função, e não é possível inicializar depois.
+> Nota: o primeiro caso pode ser confundido com uma função, e portanto seu uso não é convencional e é desaconselhado. Porém, o compilador sabe a diferença. Se não tiver escopo {} e for passado **rvalues** diretamente, é uma variável sendo inicializada na pilha. Caso contrário, é uma declaração de função. Não é possível apenas declarar dessa forma, por exemplo, apenas colocando 'int valor();', pois nesse caso o compilador entende como declaração de função, e não é possível inicializar depois.
 
 Em POO, normalmente as Classes são tratadas como tipo de variável criado pelo próprio programador, o que não deixa de ser verdade. Mas o contrário não ocorre em C++, pois nem todo tipo de variável é uma Classe. Porém, isso ocorre em Python, Java, etc. 
 
@@ -570,7 +570,7 @@ p2->nome = "Zé"; // Muda os atributos de p1.
 p2->idade = 18;
 ```
 
-- Esse é o segundo caso. Já foi exeemplificado no tópico *Instanciação com ponteiros - Estática*.
+- Esse é o segundo caso. Já foi exeemplificado no tópico *Instanciação com ponteiros - Automática*.
 
 
 # Pilha (Stack) vs Heap na RAM (Random Access Memory)
@@ -669,7 +669,7 @@ int main(){
 
 **Sempre que possível, é melhor utilizar alocação na pilha**, pois as operações são muito mais rápidas para a CPU. É óbvio que não dá pra alocar em pilha todo tempo, afinal são 2MB de espaço dependendo do compilador e do SO. E também não dá pra alocar na Heap todo tempo. É inimaginável o programador dar 'new' pra qualquer tipo de variável que ele inicializa, e ainda ter de deletar tudo no final.
 
-Alocação (estática) na pilha é a mais comum em C++. A maiorai das coisas se declaram na pilha, incluindo instâncias de Classes. Para quem veio de linguagens como Java ou C#, é estranho ver isso, pois normalmente nessas linguagens esse tipo de instanciação tem chance de levantar exceção de NullPointer em tempo de execução. Todo objeto em Java ou C# é instanciado na heap usando **new**, sem ressalvas. Mas em C++ temos a opção de instanciar direto na pilha, o que torna as operações muito mais rápidas e seguras, porém limitadas em espaço.
+Alocação (automática) na pilha é a mais comum em C++. A maioria das coisas se declaram na pilha, incluindo instâncias de Classes. Para quem veio de linguagens como Java ou C#, é estranho ver isso, pois normalmente nessas linguagens esse tipo de instanciação tem chance de levantar exceção de NullPointer em tempo de execução. Todo objeto em Java ou C# é instanciado na heap usando **new**, sem ressalvas. Mas em C++ temos a opção de instanciar direto na pilha, o que torna as operações muito mais rápidas e seguras, porém limitadas em espaço.
 
 Mas no caso da Pilha estar cheia, o que é difícil acontecer em programas bem otimizados, usa-se alocação na Heap. E também se usa alocação na Heap quando se deseja acessar objetos fora de escopos. Também é usado para objetos complexos, por exemplo, uma textura de 5MB, nesse caso é impossível alocar tanto assim na pilha.
 
