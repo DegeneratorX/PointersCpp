@@ -243,7 +243,7 @@ No caso de declaração de objetos de uma Classe (tipo não-primitivo de dado), 
 int f(int a); // Declaração de função que retorna um tipo inteiro. Não há definição, portanto não aloca memória
 class Pessoa; // Declaração de classe. Não há definição, portanto não aloca memória.
 
-int k; // Declaração em namespace Global. Por ser também definição, aloca memória estática.
+int k; // Declaração em namespace Global. É também definição, aloca memória estática.
 
 int main(){
     int a; // Declaração trivial (e definição). Aloca memória automática.
