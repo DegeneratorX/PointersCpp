@@ -149,9 +149,11 @@ Existe quatro tipos de alocações:
 - Dinâmica (na heap, existe até o programa encerrar, deletável em tempo de execução)
 
 ![image](https://user-images.githubusercontent.com/98990221/206921825-6f1813c4-3f3b-4d05-bafb-5747081a57b0.png)
+
 *source: Programming: Principles and Practice Using C++ (2nd Edition)*
 
 ![image](https://user-images.githubusercontent.com/98990221/206921975-510c9429-099c-4286-b866-df3226f41a37.png)
+
 *source: https://www.geeksforgeeks.org/memory-layout-of-c-program/*
 
 ### Alocação do Código
