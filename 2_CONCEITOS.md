@@ -237,7 +237,7 @@ Declarar é especificar um nome e um tipo para uma entidade (classe, tipo, funç
 
 Declarar diz para o compilador que a entidade existe, é única, poderá ser usada depois, e dependendo da declaração, se também for definição (próximo tópico), aloca memória.
 
-No caso de declaração de objetos de uma Classe (tipo não-primitivo de dado), o compilador trata isso automaticamente como instanciação de uma classe (será mais detalhado abaixo).
+No caso de declaração de objetos de uma Classe (tipo não-primitivo de dado), o compilador trata isso automaticamente como instanciação de uma Classe (será mais detalhado no tópico de instanciação de Classes).
 
 ```cpp
 int f(int a); // Declaração de função que retorna um tipo inteiro. Não há definição, portanto não aloca memória
