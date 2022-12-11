@@ -148,11 +148,13 @@ Existe quatro tipos de alocações:
 - Estática (separada, existe até o programa encerrar)
 - Dinâmica (na heap, existe até o programa encerrar, deletável em tempo de execução)
 
-### Código
+
+### Alocação do Código
 
 Alocar memória para o código é apenas reservar o espaço necessário para as instruções do executável (linguagem de máquina).
 
-### Automática
+
+### Alocação Automática
 
 A alocação automática de memória é feita na pilha dentro da memória RAM. É temporária e morre assim que acaba um escopo.
 
@@ -166,7 +168,8 @@ cout << a << ", " << p << endl; // printará lixo em a e p. Memória "destruída
 
 > Nota: isso será aprofundado no tópico sobre Pilhas e Heap.
 
-### Estática (data segment)
+
+### Alocação Estática (data segment)
 
 A alocação estática de memória é feita pelo linker. Ou seja, é alocado em tempo de compilação. É um tipo de alocação menos importante, mais complexa e será abordada melhor em ARQUIVOS.md. 
 
@@ -194,19 +197,23 @@ int main(){
 ```cpp
 // namespace Global
 int a; // Alocação estática não inicializada
-a = 10; // Alocação estática inicializada. 
+a = 10; // Alocação estática inicializada.
+
+static int b; // Alocação estática não inicializada
+b = 20 // Alocação estática inicializada.
 
 int main(){
-    static int b; // Alocação estática não inicializada
-    b = 20; // Alocação estática inicializada
+    static int c; // Alocação estática não inicializada
+    c = 30; // Alocação estática inicializada
 }
 ```
 
-No momento que a = 10, a alocação estática não inicializada para 'a' é deletada, e a alocação estática inicializada para 'a' é criada. O mesmo vale para 'b'.
+No momento que a = 10, a alocação estática não inicializada para 'a' é deletada, e a alocação estática inicializada para 'a' é criada. O mesmo vale para 'b' e 'c'.
 
 > Nota: por hora basta saber que dentro de namespaces **utilizando ou não static** ou dentro de funções e classes **utilizando 'static'**, as entidades serão alocadas estaticamente na memória. O uso da keyword **static** é mais complexo e será aprofundado em ARQUIVOS.md.
 
-### Dinâmica
+
+### Alocação Dinâmica
 
 A alocação dinâmica de memória é feita numa heap dentro da memória RAM. É permanente e só morre quando o programador quiser.
 
