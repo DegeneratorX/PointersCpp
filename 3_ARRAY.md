@@ -125,32 +125,103 @@ array[4] = 110; // 0x55555556aee0 +4 bytes
 array[5] = 132; // 0x55555556aee4 +4 bytes
 ```
 
-E quando se faz *array+n*, basicamente você está **somando o endereço do primeiro elemento do array com n**, sendo 'n' o número de passos dado. O passo é definido pelo tipo de dado. Levando isso em consideração, temos que por baixo dos panos ocorre a seguinte operação: *n vezes sizeof(tipo de dado)*. Ou seja, se o tipo de dado do array guardar double (8 bytes), e 'n' for 3 passos:
+E quando se faz *array+n*, basicamente você está **somando o endereço do primeiro elemento do array com n**, sendo 'n' o número de passos dado. O passo é definido pelo tipo de dado. Levando isso em consideração, temos que por baixo dos panos ocorre a seguinte operação: *n vezes sizeof(tipo de dado)*. Ou seja, se o tipo de dado do array guardar int (4 bytes), e 'n' for 3 passos:
 
-- 3 * 8 bytes = 24 bytes. Somará por baixo dos panos o endereço do primeiro elemento do array (hexadecimal) + 18 (24 em hexadecimal).
+- 3 * 4 bytes = 12 bytes. Somará por baixo dos panos o endereço do primeiro elemento do array (hexadecimal) + C (12 em hexadecimal).
 
 ```cpp
-double array[10];
-*(array+3) == array[3]; // 0x55555556aed0 + 18 = endereço do 4° elemento.
+int array[10];
+*(array+3) == array[3]; // 0x55555556aed0 + c = endereço do 4° elemento.
 ```
 
 E obviamente é preciso acessar o conteúdo desse endereço através do operador '*'.
 
-> Nota: o uso do [] é obrigatório para definir o tamanho do array no momento da declaração ou inicialização (exceto para strings, detalhes depois). Ele não é um operador nesses momentos citados, muito menos açúcar sintático. Porém, ao acessar valores do array usando índices dentro dos colchetes, [] se torna um operador. Seu uso é opcional, podendo ser substituído pelo operador de derreferência '*'.
+> Nota: o uso do operador [] (squarebrackets) é obrigatório para inicializar o array no momento da declaração ou inicialização (exceto com strings, ver tópico sobre char*). Ele não é um açúcar sintático nesses momentos. A sua função é definir um bloco de memória e o seu tamanho, que é o tamanho do array. Porém, ao acessar valores do array usando índices dentro dos colchetes, [] se torna um operador de derreferência. Seu uso é alternativo, podendo ser substituído pelo operador de derreferência '*' (não convencional).
 
 
 # Alocação de arrays
 
-Existem algumas formas de alocar espaço para arrays. Na **pilha** e na **heap** são as principais. Alocação na **data and bss segment** também é possível, mas é mais uma derivação
+Existem algumas formas de alocar espaço para arrays. Na **pilha** e na **heap** são as principais. Alocação na **data and bss segment** também é possível, mas é mais uma derivação desses dois primeiros casos, e não será categorizado.
 
 
 ## Alocação de arrays na Pilha
 
+Um exemplo de alocação automática:
+
+```cpp
+{
+    int arr[10];
+}
+// arr não existe mais
+```
+
+O array sofre pop ao sair de um escopo e a memória é liberada.
+
 ## Alocação de arrays na Heap
+
+A alocação dinâmica é um pouco mais elaborada.
+
+```cpp
+int* arr = new int[10];
+delete[] arr;
+```
+
+Da mesma forma, preciso de um ponteiro na stack que aponte pra esse array anônimo na heap que guarda inteiros. A forma como ele aponta é apontando pro primeiro elemento do array. O *new* me retorna esse endereço do primeiro elemento e guarda em *arr*. E a sintaxe para apagar o array é um pouco diferente. As chaves precisam ser postas após o operador *delete*.
+
+# Tamanho do array
+
+A definição do tamanho de um array alocado na stack é feita em tempo de compilação. Portanto, é impossível mudar o tamanho de um array na stack em tempo de execução.
+
+Códigos como esse geram erros, pois o compilador entende que em tempo de execução, *tamanho* podem mudar
+
+```cpp
+int tamanho = 5;
+int exemplo[tamanho]; // Erro.
+```
+
+Para resolver isso, basta utilizar a keyword 'static' e uma promessa 'const' para evitar comportamentos indesejados. A 'static' irá alocar estaticamente em tempo de compilação a variável *tamanho* na data segment, permitindo portanto que o compilador reconheça essa variável já em tempo de compilação e implemente no array para que seja utilizada depois.
+
+```cpp
+static const int tamanho = 5;
+int exemplo[tamanho]; // Correto.
+```
+
+Já na heap, os arrays podem receber valores de tamanho depois, pois os objetos são criados em tempo de execução quantas vezes for preciso.
+
+```cpp
+int tamanho;
+int* arr;
+cout << "Digite tamanho: "; cin >> tamanho;
+arr = new int[tamanho];
+```
+
+> Nota: para manter o track do tamanho de um array, é interessante ter o auxílio de Classes. Caso contrário, pode ser difícil implementar. Mas de qualquer forma, std::array já faz esse track, e é altamente recomendado seu uso como substituto do array primitivo do C para muitos casos, pois tem baixíssimo impacto na performance.
 
 # char VS char* VS const char* VS std::string
 
+String nada mais é do que um array de conjunto de caracteres. Existem diversas formas de representar um array que contém caracteres. As mais conhecidas são:
+
+- char
+- char*
+- const char*
+- std::string (lib)
+- std::wstring (lib)
+
 ## char
+
+Um **char** armazena 1 byte = 8 bits = 2^8-1 possibilidades = 255 possibilidades de letras. Um char nada mais é que um "inteiro" de 1 byte ao invés de 4 bytes. É o tipo de dado mais simples possível. As instruções de máquina no executável converte esse número inteiro em caractere ao analisar que o tipo da variável é *char*, de acordo com a tabela ASCII. 
+
+https://www.asciitable.com/
+
+O range de um char é de -127 a 127 = (+/-)2^7-1, sendo o bit mais significativo o responsável por deixar o número positivo ou negativo, o que não tem muita influência quando se quer trabalhar com strings. No final, se usa mais os positivos.
+
+Existe o **unsigned char**, que armazena também 1 byte = 8 bits = 2^8-1 possibilidades = 255 possibilidades de letras. Porém, o range de um unsigned char é de 0 a 255 = 2^8-1, portanto o bit mais significativo é consumido para que possa ter o dobro de caracteres positivos, com o downside de não usar os negativos, que são inúteis. Isso significa que dá pra usar a tabela ASCII extendida (ver site).
+
+O número 0 representa o caractere nulo ('\0'), que indica quando uma string acaba. Isso será mais detalhado no tópico 'char*'.
+
+```cpp
+// PAREI AQUI
+```
 
 ## char*
 

@@ -349,10 +349,14 @@ void* f(void* x){cout << x << endl; return x;} // Caso 2: OK
 - O caso 1 é uma função que retorna nada, trivial.
 - O caso 2 é uma função que retorna um ponteiro que aponta pra qualquer tipo de dado, não interessando o tipo dele quando se trabalha com o dado dentro da função. A vantagem do uso de void* é quando você não sabe que tipo de dado irá ser retornado ou o tipo de dado que será enviado por parâmetro.
 
-> Nota: o uso de void* em C++ não é muito comum, pois foi introduzida na linguagem o conceito de templates, que basicamente criam funções em tempo de execução para cada tipo de dado passado e são muito mais eficientes que o uso de void*. template, using, std::string, class e new são alguns exemplos de features do C++ que substituiram bem heranças do C, sendo respectivamente void*, typedef, const char*, struct e malloc().
+> Nota: o uso de void* em C++ não é muito comum, pois foi introduzida na linguagem o conceito de templates, que basicamente criam funções em tempo de execução para cada tipo de dado passado e são muito mais eficientes que o uso de void*. 
+
+> Nota 2: template, using, std::string, class e new são alguns exemplos de features do C++ que substituiram bem heranças do C, sendo respectivamente void*, typedef, const char*, struct e malloc().
 
 
 ## E o 'this'?
+
+> Nota: para esse tópico, é recomendado conhecimento em POO.
 
 A keyword **this** nada mais é do que um ponteiro para a própria instância da Classe. No construtor muitas vezes é utilizado pra não gerar conflito com parâmetros passados, pois ele pode levar o mesmo nome do atributo da instância atual.
 
@@ -361,7 +365,7 @@ class Pessoa{
     int nome;
     int idade;
     Pessoa(string nome, int idade){
-        this->nome = nome;
+        this->nome = nome; // O uso da seta equivale a linha abaixo
         (*this).idade = idade; // idade = idade sem o 'this' seria redundante e bizarro.
     }
 }

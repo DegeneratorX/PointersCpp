@@ -160,12 +160,12 @@ Existem quatro tipos de alocações:
 
 ### Alocação do Código (code segment)
 
-A alocação de memória para o código é feita em tempo de compilação no **code segment** que fica no próprio executável (object file). Reserva o espaço necessário para as instruções de máquina (linguagem de máquina). Possui armazenamento fixo e no geral é read-only. Morre assim que o programa termina.
+- A alocação de memória para o código é feita em tempo de compilação no **code segment** que fica no próprio executável (object file). Reserva o espaço necessário para as instruções de máquina (linguagem de máquina). Possui armazenamento fixo e no geral é read-only. Morre assim que o programa termina.
 
 
 ### Alocação Automática (call stack segment)
 
-A alocação automática de memória é feita em tempo de execução em uma **pilha** (também chamada de **call stack**) na **stack segment** dentro da memória RAM. É um espaço para guardar variáveis com tempo de vida que duram um escopo. Possui armazenamento fixo. Morre assim que acaba o escopo (pop).
+- A alocação automática de memória é feita em tempo de execução em uma **pilha** (também chamada de **call stack**) na **stack segment** dentro da memória RAM. É um espaço para guardar variáveis com tempo de vida que duram um escopo. Possui armazenamento fixo. Morre assim que acaba o escopo (pop).
 
 ```cpp
 {
@@ -178,9 +178,9 @@ cout << a << ", " << p << endl; // printará lixo em a e p. Memória "destruída
 > Nota: isso será aprofundado no tópico sobre Pilhas e Heap.
 
 
-### Alocação Estática (data segment e bbs)
+### Alocação Estática (data segment and bbs segment)
 
-A alocação estática de memória é feita em tempo de compilação (pelo linker) em um local chamado **data and bbs segment**, que fica no próprio executável (object file). Reserva o espaço necessário para armazenar as variáveis estáticas, com tempo de vida que duram a execução toda do programa. Possui armazenamento fixo. Morre quando o programa encerra. 
+- A alocação estática de memória é feita em tempo de compilação (pelo linker) em um local chamado **data and bbs segment**, que fica no próprio executável (object file). Reserva o espaço necessário para armazenar as variáveis estáticas, com tempo de vida que duram a execução toda do programa. Possui armazenamento fixo. Morre quando o programa encerra. 
 
 > Nota: É um tipo de alocação menos importante, mais complexa e será abordada melhor em ARQUIVOS.md. 
 
@@ -204,7 +204,7 @@ int main(){
 }
 ```
 
-> Nota: A memória estática é subdividida em duas: memória estática inicializada (data segment) e memória estática não inicializada (bbs segment), e estão em dois subblocos diferentes.
+> Nota: A memória estática é subdividida em duas: memória estática inicializada (data segment) e memória estática não inicializada (bbs segment), e estão em dois subblocos adjacentes.
 
 ```cpp
 // namespace Global
@@ -227,7 +227,7 @@ No momento que a = 10, a alocação estática não inicializada para 'a' é dele
 
 ### Alocação Dinâmica (heap segment)
 
-A alocação dinâmica de memória é feita em tempo de execução numa heap na **heap segment** dentro da memória RAM. É um espaço para guardar variáveis com tempo de vida que o programador define. Possui armazenamento dinâmico (tamanho da RAM). Morre assim que o programador usar a keyword *delete*, ou seja, quando o programador quiser.
+- A alocação dinâmica de memória é feita em tempo de execução numa heap na **heap segment** dentro da memória RAM. É um espaço para guardar variáveis com tempo de vida que o programador define. Possui armazenamento dinâmico (tamanho da RAM). Morre assim que o programador usar a keyword *delete*, ou seja, quando o programador quiser.
 
 ```cpp
 int* a = new int();
@@ -237,6 +237,12 @@ delete a;
 - *delete a* é uma operação feita sobre o conteúdo para o qual 'a' aponta, que é a liberação de memória desse 'new int' na heap (deletar).
 
 > Nota: isso será aprofundado mais pra frente e no tópico sobre Pilhas e Heap.
+
+### Extra: alocação especial de constantes (rodata segment)
+
+- A alocação de memória para constantes é feita em tempo de compilação na **read-only data segment** (rodata segment), que fica no próprio executável (object file). Reserva o espaço necessário para as constantes (exemplo: strings constantes). Possui armazenamento fixo e é read-only. Morre assim que o programa termina.
+
+> Nota: não se trata dos 'const'. A keyword 'const' apenas proíbe uma variável de ser modificada, mas ela não deixa de ser variável. É como se fosse uma promessa, mas qualquer promessa pode ser quebrada. Com 'const', o compilador sempre assume que a variável não foi e não será mudada, mas não é garantia. Há um mito de que 'const' gera ganho de desempenho do programa, mas é comprovadamente falso. Ou seja, normalmente na .rodata contém objetos imutáveis presentes no programa, como strings literais. Nada de variáveis 'const'.
 
 ## Declarar 
 
