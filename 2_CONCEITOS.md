@@ -208,7 +208,7 @@ int main(){
 
 ```cpp
 // namespace Global
-int a; // Alocação estática não inicializada
+int a; // Alocação estática não inicializada. Por padrão tem valor 0.
 a = 10; // Alocação estática inicializada.
 
 static int b; // Alocação estática não inicializada
