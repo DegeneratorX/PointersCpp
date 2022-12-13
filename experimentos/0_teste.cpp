@@ -1,7 +1,6 @@
 #include <iostream>
 #include <string>
 
-
 using std::cin;
 using std::cout;
 using std::endl;
@@ -19,10 +18,12 @@ public:
     }
 };
 
-class Pessoa{
+class Pessoa
+{
 public:
     static int x;
-    static void print(){
+    static void print()
+    {
         cout << x << endl;
     }
 };
@@ -34,14 +35,8 @@ extern void teste();
 
 int main()
 {
-    Pessoa p;
-    p.x = 10;
-    p.print();
-
-    Pessoa p2;
-    p2.x = 20;
-    p.print();
-
-    teste();
-
+    // char str[] = "Ola mundo";
+    char arr_1[] = {'O', 'l', 'a', '\0'};
+    // char arr_2[4] = "Ola";
+    cout << sizeof(arr_1) << endl;
 }

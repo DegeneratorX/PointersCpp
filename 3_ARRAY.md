@@ -209,21 +209,72 @@ String nada mais é do que um array de conjunto de caracteres. Existem diversas 
 
 ## char
 
-Um **char** armazena 1 byte = 8 bits = 2^8-1 possibilidades = 255 possibilidades de letras. Um char nada mais é que um "inteiro" de 1 byte ao invés de 4 bytes. É o tipo de dado mais simples possível. As instruções de máquina no executável converte esse número inteiro em caractere ao analisar que o tipo da variável é *char*, de acordo com a tabela ASCII. 
+Um **char** armazena 1 byte = 8 bits = 2^8 possibilidades = 256 possibilidades de letras. Um char nada mais é que um "inteiro" de 1 byte ao invés de 4 bytes. É o tipo de dado mais simples possível. As instruções de máquina no executável converte esse número inteiro em caractere ao analisar que o tipo da variável é *char*, de acordo com a tabela ASCII. 
 
 https://www.asciitable.com/
 
 O range de um char é de -127 a 127 = (+/-)2^7-1, sendo o bit mais significativo o responsável por deixar o número positivo ou negativo, o que não tem muita influência quando se quer trabalhar com strings. No final, se usa mais os positivos.
 
-Existe o **unsigned char**, que armazena também 1 byte = 8 bits = 2^8-1 possibilidades = 255 possibilidades de letras. Porém, o range de um unsigned char é de 0 a 255 = 2^8-1, portanto o bit mais significativo é consumido para que possa ter o dobro de caracteres positivos, com o downside de não usar os negativos, que são inúteis. Isso significa que dá pra usar a tabela ASCII extendida (ver site).
+Existe o **unsigned char**, que armazena também 1 byte = 8 bits = 2^8 possibilidades = 256 possibilidades de letras. Porém, o range de um unsigned char é de 0 a 255 = 2^8-1, portanto o bit mais significativo é consumido para que possa ter o dobro de caracteres positivos, com o downside de não usar os negativos, que são inúteis. Isso significa que dá pra usar a tabela ASCII extendida (ver site).
 
 O número 0 representa o caractere nulo ('\0'), que indica quando uma string acaba. Isso será mais detalhado no tópico 'char*'.
 
 ```cpp
-// PAREI AQUI
+char letra = 'F';
+int i = 70;
+
+if (letra == i){ // Sim, isso dá true
+    cout << "São diferentes visualmente, mas são iguais por baixo dos panos." << endl;
+}
+
+if ('F' == i){ // True
+    cout << "Dá até pra comparar o caractere diretamente com o número" << endl;
+}
+
+cout << (char) i << endl; // Casting de 70 para char. Printará 'F'. O 70 se mantém, mas o char põe uma "máscara" sobre o 70, que é o 'F'.
+
+char outra_letra = 64; // Sim, char pode receber número.
+cout << outra_letra << endl; // Printará '@'
 ```
 
+Perceba o uso de aspas simples '' para o tipo *char*. Já o tipo char* (string primitivo) é aspas duplas "". Essa é uma forma básica de diferenciar um char de um char*.
+
+Tipo *char* é muito primitivo, e atualmente é pouquíssimo utilizado por convenção. Possui inúmeras limitações. Mas é ideal para entender como funcionam as strings, que nada mais são do que um array de char.
+
+```cpp
+char arr_1[4] = {'O', 'l', 'a', '\0'}; // Inicialização clássica de um char.
+char arr_2[] = {'O', 'l', 'a', '\0'} // sizeof(arr_2) = 4. É possível inicializar sem tamanho definido.
+
+char arr_3[4] = "Ola"; // Caractere nulo fica escondido na string (const char*).
+char arr_4[] = "Ola"; // sizeof(arr_4) = 4. É possível inicializar sem tamanho definido.
+
+char declaracao_arr1[]; // ERRO!
+char declaracao_arr2[4]; // OK! Pode inicializar depois. 
+```
+
+Diversas formas de inicializar um array.
+
+- Em **arr_1**, sem o caractere \0, printando esse objeto pode resultar em Ola@#%!...#@ até procurar um byte 00 (nulo) na memória "sem querer" e parar. Os símbolos representam lixo na memória. Por isso é importante o \0, para o operador *cout* parar a leitura/iteração do array no momento certo definido pelo programador, que é quando verifica se é nulo. Caso contrário o operador *cout* começará a iterar no array fora dos limites, e no C++ não há levantamento de exceção para leitura de índices fora dos limites.
+
+- Em **arr_2** e **arr_4**, é possível inicializar sem definir um tamanho. O compilador já aloca inteligentemente o tamanho baseado no que recebe.
+
 ## char*
+
+O char* é o tipo string primitivo herdado do C. Possui muito mais utilidade e é amplamente utilizado no lugar da biblioteca convencional std::string para situações onde a performance da aplicação precisa ser priorizada.
+
+https://www.google.com/search?q=%5B%5D+vs+*+c%2B%2B&ei=upaXY5vzKbqY1sQPvJixiAs&ved=0ahUKEwibuMj9_PT7AhU6jJUCHTxMDLEQ4dUDCA8&uact=5&oq=%5B%5D+vs+*+c%2B%2B&gs_lcp=Cgxnd3Mtd2l6LXNlcnAQAzIGCAAQFhAeMgYIABAWEB4yBggAEBYQHjIGCAAQFhAeMgYIABAWEB4yBggAEBYQHjIGCAAQFhAeMgYIABAWEB4yBggAEBYQHjIGCAAQFhAeOgsIABAHEB4QsAMQEzoHCAAQgAQQEzoICAAQFhAeEBM6DQgAEIAEELEDEIMBEA06BwgAEIAEEA06CggAEIAEELEDEA06CQgAEBYQHhDxBEoECEEYAUoECEYYAFDLA1jpB2CUCWgBcAB4AIABogGIAesEkgEDMC40mAEAoAEByAEKwAEB&sclient=gws-wiz-serp
+
+https://www.geeksforgeeks.org/difference-pointer-array-c/
+
+https://stackoverflow.com/questions/10760893/c-vs-as-a-function-parameter
+
+https://stackoverflow.com/questions/27890375/int-vs-int-vs-int-in-function-parameters-which-one-should-i-use
+
+https://stackoverflow.com/questions/24041263/is-there-a-differene-between-int-x-and-int-x
+
+https://www.geeksforgeeks.org/storage-for-strings-in-c/
+
+https://www.geeksforgeeks.org/introduction-of-shared-memory-segment/
 
 ## const char*
 
