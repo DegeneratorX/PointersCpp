@@ -205,7 +205,7 @@ String nada mais é do que um array de conjunto de caracteres. Existem diversas 
 - char*
 - const char*
 - std::string (lib)
-- std::wstring (lib)
+- outros (w_char_t, char'Number'_t, std::wstring)
 
 ## char
 
@@ -260,7 +260,9 @@ Diversas formas de inicializar um array.
 
 ## char*
 
-O char* é o tipo string primitivo herdado do C. Possui muito mais utilidade e é amplamente utilizado no lugar da biblioteca convencional std::string para situações onde a performance da aplicação precisa ser priorizada.
+O char* é o tipo string primitivo herdado do C. Em C++, é somente utilizado no lugar da biblioteca convencional std::string para situações onde a performance da aplicação precisa ser priorizada.
+
+- 12/12
 
 https://www.google.com/search?q=%5B%5D+vs+*+c%2B%2B&ei=upaXY5vzKbqY1sQPvJixiAs&ved=0ahUKEwibuMj9_PT7AhU6jJUCHTxMDLEQ4dUDCA8&uact=5&oq=%5B%5D+vs+*+c%2B%2B&gs_lcp=Cgxnd3Mtd2l6LXNlcnAQAzIGCAAQFhAeMgYIABAWEB4yBggAEBYQHjIGCAAQFhAeMgYIABAWEB4yBggAEBYQHjIGCAAQFhAeMgYIABAWEB4yBggAEBYQHjIGCAAQFhAeOgsIABAHEB4QsAMQEzoHCAAQgAQQEzoICAAQFhAeEBM6DQgAEIAEELEDEIMBEA06BwgAEIAEEA06CggAEIAEELEDEA06CQgAEBYQHhDxBEoECEEYAUoECEYYAFDLA1jpB2CUCWgBcAB4AIABogGIAesEkgEDMC40mAEAoAEByAEKwAEB&sclient=gws-wiz-serp
 
@@ -275,6 +277,16 @@ https://stackoverflow.com/questions/24041263/is-there-a-differene-between-int-x-
 https://www.geeksforgeeks.org/storage-for-strings-in-c/
 
 https://www.geeksforgeeks.org/introduction-of-shared-memory-segment/
+
+- 13/12
+
+https://www.google.com/search?q=why+const+char*+instead+of&oq=why+const+char*+instead+of&aqs=chrome..69i57.5656j0j1&sourceid=chrome&ie=UTF-8
+
+https://www.geeksforgeeks.org/difference-const-char-p-char-const-p-const-char-const-p/
+
+https://www.google.com/search?q=undefined+behaviour+c%2B%2B&ei=8AuZY7GjNrGb1sQPwbWosAI&ved=0ahUKEwix29Hz4Pf7AhWxjZUCHcEaCiYQ4dUDCA8&uact=5&oq=undefined+behaviour+c%2B%2B&gs_lcp=Cgxnd3Mtd2l6LXNlcnAQAzIHCAAQgAQQEzIICAAQFhAeEBMyCAgAEBYQHhATMggIABAWEB4QEzIICAAQFhAeEBMyCAgAEBYQHhATMggIABAWEB4QEzIICAAQFhAeEBMyCAgAEBYQHhATMgoIABAWEB4QDxATOgoIABBHENYEELADSgQIQRgASgQIRhgAUNsBWLcGYOIHaAFwAXgAgAGaAYgB3QSSAQMwLjSYAQCgAQHIAQjAAQE&sclient=gws-wiz-serp
+
+https://www.geeksforgeeks.org/const-keyword-in-cpp/
 
 ## const char*
 

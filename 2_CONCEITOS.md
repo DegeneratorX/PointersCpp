@@ -145,9 +145,9 @@ int main(){
 O ato de alocar significa preparar um bloco de memória específico na memória RAM para depois jogar dados lá.
 
 Existem quatro tipos de alocações:
-- De código (a parte, existe até o programa encerrar)
+- De código (no executável, existe até o programa encerrar)
 - Automática (na pilha, temporária no escopo)
-- Estática (na data segment e bbs segment, existe até o programa encerrar)
+- Estática (na data segment e bbs segment, ambos no executável, existem até o programa encerrar)
 - Dinâmica (na heap, existe até o programa encerrar, deletável em tempo de execução)
 
 ![image](https://user-images.githubusercontent.com/98990221/206921825-6f1813c4-3f3b-4d05-bafb-5747081a57b0.png)
@@ -165,12 +165,12 @@ Existem quatro tipos de alocações:
 
 ### Alocação Automática (call stack segment)
 
-- A alocação automática de memória é feita em tempo de execução em uma **pilha** (também chamada de **call stack**) na **stack segment** dentro da memória RAM. É um espaço para guardar variáveis com tempo de vida que duram um escopo. Possui armazenamento fixo. Morre assim que acaba o escopo (pop).
+- A alocação automática de memória é feita em tempo de execução em uma **pilha** (também chamada de **call stack**) na **stack segment** dentro da memória RAM. É um espaço para guardar variáveis definidas com tempo de vida que duram um escopo. Possui armazenamento fixo. Morre assim que acaba o escopo (pop).
 
 ```cpp
 {
-    int a; // Defino 'a'. Portanto ocorre alocação automática (pilha)
-    Pessoa p; // Defino 'p'. Portanto alocação automática (pilha).
+    int a; // Defino 'a'. Portanto ocorre alocação de memória. (automática na pilha)
+    Pessoa p; // Defino 'p'. Portanto alocação de memória. (automática na pilha).
 }
 cout << a << ", " << p << endl; // printará lixo em a e p. Memória "destruída".
 ```
@@ -686,6 +686,9 @@ Alocação (automática) na pilha é a mais comum em C++. A maioria das coisas s
 
 Mas no caso da Pilha estar cheia, o que é difícil acontecer em programas bem otimizados, usa-se alocação na Heap. E também se usa alocação na Heap quando se deseja acessar objetos fora de escopos. Também é usado para objetos complexos, por exemplo, uma textura de 5MB, nesse caso é impossível alocar tanto assim na pilha.
 
+# Const
+
+- TODO
 
 # Entendido o básico de conceitos...
 

@@ -16,6 +16,10 @@ public:
         this->nome = nome;
         this->ano = ano;
     }
+
+    int operator<<(int x){
+        
+    }
 };
 
 class Pessoa
@@ -35,8 +39,7 @@ extern void teste();
 
 int main()
 {
-    // char str[] = "Ola mundo";
-    char arr_1[] = {'O', 'l', 'a', '\0'};
-    // char arr_2[4] = "Ola";
-    cout << sizeof(arr_1) << endl;
+    while(true){
+        Pessoa* p = new Pessoa;
+    }
 }
