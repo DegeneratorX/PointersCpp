@@ -197,13 +197,14 @@ arr = new int[tamanho];
 
 > Nota: para manter o track do tamanho de um array, é interessante ter o auxílio de Classes. Caso contrário, pode ser difícil implementar. Mas de qualquer forma, std::array já faz esse track, e é altamente recomendado seu uso como substituto do array primitivo do C para muitos casos, pois tem baixíssimo impacto na performance.
 
-# char VS char[] VS char* VS const char* VS std::string VS outros
+# char VS const char VS std::string VS outros
 
 String nada mais é do que um array de caracteres. Existem diversas formas de representar caracteres e um array que contém caracteres. As principais são:
 
 - char
 - char[]
 - char*
+- const char[]
 - const char*
 - std::string (lib)
 - outros (w_char_t, char'Number'_t, std::wstring)
@@ -244,7 +245,9 @@ cout << outra_letra << endl; // Printará '@'
 
 O char[] é o tipo string primitivo herdado do C. É um tipo muito pouco utilizado (juntamente com char*) devida a superioridade do 'const char*' ao evitar bugs indesejados e comportamentos estranhos (undefined behaviours).
 
-Perceba o uso de aspas simples '' para o tipo *char*. Já as aspas duplas "" define o tipo char[] (ou char*). Essa é uma forma básica de diferenciar um char de um char[]/char*. Ao ver uma string e passar o mouse em cima usando uma IDE ou editor, geralmente aparecerá const char[]
+Perceba o uso de aspas simples '' para o tipo *char*. Já as aspas duplas "" define o tipo char[] (ou char*). Essa é uma forma básica de diferenciar um char de um char[]/char*. Ao passar o mouse em cima de uma string já com aspas duplas usando uma IDE ou vscode, geralmente aparecerá const char[].
+
+################### PAREI AQUI
 
 Tipo *char* é muito primitivo, e atualmente é pouquíssimo utilizado por convenção. Possui inúmeras limitações. Mas é ideal para entender como funcionam as strings, que nada mais são do que um array de char.
 
@@ -314,6 +317,10 @@ https://www.geeksforgeeks.org/difference-const-char-p-char-const-p-const-char-co
 https://www.google.com/search?q=undefined+behaviour+c%2B%2B&ei=8AuZY7GjNrGb1sQPwbWosAI&ved=0ahUKEwix29Hz4Pf7AhWxjZUCHcEaCiYQ4dUDCA8&uact=5&oq=undefined+behaviour+c%2B%2B&gs_lcp=Cgxnd3Mtd2l6LXNlcnAQAzIHCAAQgAQQEzIICAAQFhAeEBMyCAgAEBYQHhATMggIABAWEB4QEzIICAAQFhAeEBMyCAgAEBYQHhATMggIABAWEB4QEzIICAAQFhAeEBMyCAgAEBYQHhATMgoIABAWEB4QDxATOgoIABBHENYEELADSgQIQRgASgQIRhgAUNsBWLcGYOIHaAFwAXgAgAGaAYgB3QSSAQMwLjSYAQCgAQHIAQjAAQE&sclient=gws-wiz-serp
 
 https://www.geeksforgeeks.org/const-keyword-in-cpp/
+
+## const char[]
+
+- TODO
 
 ## const char*
 
