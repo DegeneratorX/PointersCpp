@@ -686,9 +686,54 @@ Alocação (automática) na pilha é a mais comum em C++. A maioria das coisas s
 
 Mas no caso da Pilha estar cheia, o que é difícil acontecer em programas bem otimizados, usa-se alocação na Heap. E também se usa alocação na Heap quando se deseja acessar objetos fora de escopos. Também é usado para objetos complexos, por exemplo, uma textura de 5MB, nesse caso é impossível alocar tanto assim na pilha.
 
+
 # Const
 
+A keyword **const** é uma promessa (contrato) que o programador firma com o compilador de que a variável não deverá ser alterada. E o compilador previne a sua mudança e a torna imutável. Mas não há garantia.
+
+Ela pode ser utilizada de várias formas. Mas é obrigatório que se inicialize a variável caso use **const**. Somente declaração não é suficiente.
+
+
+## Const sem ponteiros
+
+```cpp
+const int a; //ERRO
+const int b = 10;
+b = 5; // ERRO
+int const c = 17; // OK
+```
+
+> Nota: 'const int' e 'int const' são válidos e equivalentes. Fazem a mesma coisa. Porém, no próximo tópico, ao utilizar ponteiros, essa troca possui diferenças.
+
+
+## Const com ponteiros
+
+```cpp
+int x = 55;
+const int* a = &x; // Caso 1
+int* const b = &x; // Caso 2
+const int* const c  = &x; // Caso 3
+```
+
+- Caso 1: Derreferenciar 'a' é proibido. Você pode mudar diretamente 'x', já que não é const, mas não pode mudar 'x' através de 'a' com derreferencia, pois 'a' é um ponteiro que aponta pra um int constante (const int). Ex: *a = 10. Erro!
+
+- Caso 2: Mudar o ponteiro b pra onde ele vai apontar é proibido. 'b' é um ponteiro constante que aponta pra um inteiro (const b). Ex: b = &j. Erro!
+
+- Caso 3: Uma combinação do caso 1 e 2, tornando impossível tanto mudar pra onde o ponteiro aponta, quanto mudar o valor para o qual o ponteiro aponta. Mudar o ponteiro 'c' e derreferenciar ele são proibidos. 'c' é um ponteiro constante que aponta pra um inteiro constante (const int, const c).
+
+Existe outra forma de representar o caso 1, porém com sintaxe mais confusa e não aconselhada para ponteiros simples. Pode-se encontrar eventualmente dessa forma em códigos espalhados pela internet, e é possível que seja utilizado para casos de arrays multidimensionais e strings passadas por parâmetro de uma função. Isso será abordado no arquivo ARRAYS.md.
+
+```cpp
+int x = 55;
+// Equivalente ao caso 1. Asterisco na frente de const.
+int const* a = &x; // Mais utilizado para arrays multidimensionais.
+```
+
+
+## Const em método
+
 - TODO
+
 
 # Entendido o básico de conceitos...
 

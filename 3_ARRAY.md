@@ -39,7 +39,7 @@ Existem diversas outras formas de declarar e representar arrays. Todas essas for
 
 # Bibliotecas alternativas para arrays (estrutura de dados)
 
-Em C++ os programadores utilizam bastante bibliotecas que tentam trabalhar com estrutura de dados de forma mais segura, com pouco impacto na performance em tempo de execução. Por convenção se usam mais bibliotecas do C++, para evitar o uso de heranças do C que podem causar dores de cabeça. Essas bibliotecas são padrões da STL (Standard Template Library) e estão na categoria de Containers.
+Em C++ os programadores utilizam bastante bibliotecas que tentam trabalhar com estrutura de dados de forma mais segura, com pouco impacto na performance em tempo de execução. Por convenção se usam mais bibliotecas do C++, para evitar o uso de heranças primitivas do C que podem causar dores de cabeça. Essas bibliotecas são padrões da STL (Standard Template Library) e estão na categoria de Containers.
 
 Alguns exemplos são:
 
@@ -99,22 +99,22 @@ cout << array[5] << endl; // index 5 é o último elemento. Index 6 é lixo.
 ```
 
 Basicamente eu acesso o index *5* do array, e isso irá imprimir o elemento 120.
-E isso é equivalente a isso aqui:
+E isso é equivalente a isso aqui (derreferência):
 
 ```cpp
-cout << *(array+5) << endl;
+cout << *(array+5) << endl; // 120
 ```
 
-Ou seja, isso aqui tudo vale:
+Ou seja, o índex e o operador [] são praticamente um açúcar sintático, pois de trás dos panos o que ocorre é uma derreferência. Portanto, isso aqui tudo vale:
 
 ```cpp
-array[5] == *(array+5); // True
-array[4] == *(array+4); // True
-array[0] == *array;     // True
+array[5] == *(array+5); // True - 120
+array[4] == *(array+4); // True - 100
+array[0] == *array;     // True - 20
 array[n] == *(array+n); // True
 ```
 
-Isso ocorre, pois no array os elementos estão lado a lado dentro de um bloco de memória reservado (na pilha ou heap). Ou seja, cada elemento de um endereço de memória para outro é aumentado em bytes do tipo de dado que o array carrega. Exemplo:
+Isso ocorre, pois no array os elementos estão lado a lado dentro de um bloco de memória reservado, não importa se o array foi inicializado na pilha ou heap. Ou seja, cada elemento de um endereço de memória para outro é aumentado em bytes do tipo de dado que o array carrega. Exemplo:
 
 ```cpp
 array[0] = 20;  // 0x55555556aed0
@@ -136,7 +136,7 @@ int array[10];
 
 E obviamente é preciso acessar o conteúdo desse endereço através do operador '*'.
 
-> Nota: o uso do operador [] (squarebrackets) é obrigatório para inicializar o array no momento da declaração ou inicialização (exceto com strings, ver tópico sobre char*). Ele não é um açúcar sintático nesses momentos. A sua função é definir um bloco de memória e o seu tamanho, que é o tamanho do array. Porém, ao acessar valores do array usando índices dentro dos colchetes, [] se torna um operador de derreferência. Seu uso é alternativo, podendo ser substituído pelo operador de derreferência '*' (não convencional).
+> Nota: o uso do operador [] (squarebrackets) é obrigatório para inicializar o array no momento da declaração ou inicialização (exceto com strings, ver tópico sobre char*). Ele não é um açúcar sintático nesses momentos. A sua função é definir um bloco de memória e o seu tamanho, que é o tamanho do array. Porém, ao acessar valores do array usando índices dentro dos colchetes, [] se torna um operador de derreferência e açúcar sintático. Seu uso é alternativo, podendo ser substituído pelo operador de derreferência '*' (não convencional).
 
 
 # Alocação de arrays
@@ -197,15 +197,17 @@ arr = new int[tamanho];
 
 > Nota: para manter o track do tamanho de um array, é interessante ter o auxílio de Classes. Caso contrário, pode ser difícil implementar. Mas de qualquer forma, std::array já faz esse track, e é altamente recomendado seu uso como substituto do array primitivo do C para muitos casos, pois tem baixíssimo impacto na performance.
 
-# char VS char* VS const char* VS std::string
+# char VS char[] VS char* VS const char* VS std::string VS outros
 
-String nada mais é do que um array de conjunto de caracteres. Existem diversas formas de representar um array que contém caracteres. As mais conhecidas são:
+String nada mais é do que um array de caracteres. Existem diversas formas de representar caracteres e um array que contém caracteres. As principais são:
 
 - char
+- char[]
 - char*
 - const char*
 - std::string (lib)
 - outros (w_char_t, char'Number'_t, std::wstring)
+- char[] vs char*: qual utilizar?
 
 ## char
 
@@ -217,7 +219,7 @@ O range de um char é de -127 a 127 = (+/-)2^7-1, sendo o bit mais significativo
 
 Existe o **unsigned char**, que armazena também 1 byte = 8 bits = 2^8 possibilidades = 256 possibilidades de letras. Porém, o range de um unsigned char é de 0 a 255 = 2^8-1, portanto o bit mais significativo é consumido para que possa ter o dobro de caracteres positivos, com o downside de não usar os negativos, que são inúteis. Isso significa que dá pra usar a tabela ASCII extendida (ver site).
 
-O número 0 representa o caractere nulo ('\0'), que indica quando uma string acaba. Isso será mais detalhado no tópico 'char*'.
+O número 0 representa o caractere nulo ('\0'), que indica quando uma string acaba. Isso será mais detalhado no tópico 'char[]'.
 
 ```cpp
 char letra = 'F';
@@ -231,36 +233,61 @@ if ('F' == i){ // True
     cout << "Dá até pra comparar o caractere diretamente com o número" << endl;
 }
 
-cout << (char) i << endl; // Casting de 70 para char. Printará 'F'. O 70 se mantém, mas o char põe uma "máscara" sobre o 70, que é o 'F'.
+// Casting de 70 para char. Printará 'F'. O 70 se mantém, mas o char põe uma "máscara" sobre o 70, que é o 'F' usando ASCII.
+cout << (char) i << endl; // Tenho inclusive a opção de converter char pra int.
 
 char outra_letra = 64; // Sim, char pode receber número.
 cout << outra_letra << endl; // Printará '@'
 ```
 
-Perceba o uso de aspas simples '' para o tipo *char*. Já o tipo char* (string primitivo) é aspas duplas "". Essa é uma forma básica de diferenciar um char de um char*.
+## Char[]
+
+O char[] é o tipo string primitivo herdado do C. É um tipo muito pouco utilizado (juntamente com char*) devida a superioridade do 'const char*' ao evitar bugs indesejados e comportamentos estranhos (undefined behaviours).
+
+Perceba o uso de aspas simples '' para o tipo *char*. Já as aspas duplas "" define o tipo char[] (ou char*). Essa é uma forma básica de diferenciar um char de um char[]/char*. Ao ver uma string e passar o mouse em cima usando uma IDE ou editor, geralmente aparecerá const char[]
 
 Tipo *char* é muito primitivo, e atualmente é pouquíssimo utilizado por convenção. Possui inúmeras limitações. Mas é ideal para entender como funcionam as strings, que nada mais são do que um array de char.
 
+Eis alguns exemplos de um array de char:
+
 ```cpp
-char arr_1[4] = {'O', 'l', 'a', '\0'}; // Inicialização clássica de um char.
+char arr_1[4] = {'O', 'l', 'a', '\0'}; // Inicialização clássica de um array de 4 elementos (4 chars).
 char arr_2[] = {'O', 'l', 'a', '\0'} // sizeof(arr_2) = 4. É possível inicializar sem tamanho definido.
 
 char arr_3[4] = "Ola"; // Caractere nulo fica escondido na string (const char*).
 char arr_4[] = "Ola"; // sizeof(arr_4) = 4. É possível inicializar sem tamanho definido.
 
-char declaracao_arr1[]; // ERRO!
 char declaracao_arr2[4]; // OK! Pode inicializar depois. 
+char declaracao_arr1[]; // ERRO!
 ```
 
-Diversas formas de inicializar um array.
+Diversas formas de inicializar um array de char.
 
 - Em **arr_1**, sem o caractere \0, printando esse objeto pode resultar em Ola@#%!...#@ até procurar um byte 00 (nulo) na memória "sem querer" e parar. Os símbolos representam lixo na memória. Por isso é importante o \0, para o operador *cout* parar a leitura/iteração do array no momento certo definido pelo programador, que é quando verifica se é nulo. Caso contrário o operador *cout* começará a iterar no array fora dos limites, e no C++ não há levantamento de exceção para leitura de índices fora dos limites.
 
 - Em **arr_2** e **arr_4**, é possível inicializar sem definir um tamanho. O compilador já aloca inteligentemente o tamanho baseado no que recebe.
 
-## char*
+> Nota: Para reforçar, **array de char = string**. Portanto, para todos os exemplos desse tópico acima (incluindo o arr_1 e arr_2), são strings, mesmo definindo caractere por caractere no array. É uma string.
 
-O char* é o tipo string primitivo herdado do C. Em C++, é somente utilizado no lugar da biblioteca convencional std::string para situações onde a performance da aplicação precisa ser priorizada.
+## char* - TODO: FALAR SOBRE ALOCAÇÃO NA HEAP
+
+O char* possui semelhanças explícitas com o char[], incluindo a forma de inicializar, mas existem diferenças sucintas por trás dos panos e em algumas sintaxes de inicialização.
+
+```cpp
+char* str = "Ola";
+char str[] = "Ola";
+```
+
+Qual a diferença? Será abordada no tópico **"char[] vs char*: qual utilizar?"** devida a alta complexidade e quantidade de informações. Por hora basta saber que as duas são aparentemente equivalentes, a fim de não causar confusão.
+
+Também é possível alocar a string na heap graças ao uso de um ponteiro na stack.
+
+```cpp
+char* arr = new char[4];
+arr = "Ola";
+cout << arr[2] << endl; // Printará 'a'.
+delete[] arr;
+```
 
 - 12/12
 
@@ -290,9 +317,27 @@ https://www.geeksforgeeks.org/const-keyword-in-cpp/
 
 ## const char*
 
+O **'const char*'** é o tipo mais utilizado em C++ para casos onde a std::string não pode ser utilizada. O motivo do **'const char*'** ser utilizado mais que o char* é o simples fato de que toda string criada com aspas duplas " " é automaticamente criada na memória como **'const char*'**. Isso é decisão pura do Bjarne Stroustrup (criador do C++), por talvez acreditar que as strings devam ser imutáveis para evitar o já falado undefined behaviour.
+
+E o fato de que strings normalmente são imutáveis em QUALQUER linguagem de programação de alto nível atualmente, é que strings são uma lista de caracteres, e sendo ela imutável, ficará guardada na memória para poder ser usada em O(1) durante uma cópia a qualquer momento do programa. Supondo uma mutabilidade da string, alterar qualquer coisa nela precisaria iterar sobre a string novamente O(n) no banco de memória de strings para uma checagem e nova cópia. E O(n) se aplicará sempre que houver mudanças mesmo que mínimas (como um simples caractere), e portanto seria um big deal para performance.
+
+Em C++, o **'const char*'** é somente utilizado no lugar da biblioteca convencional std::string em situações onde a performance da aplicação precisa ser priorizada, pois std::string aloca string na heap.
+
+*char const *const *const strings
+
 ## std::string
 
+## Outros chars
+
+## char[] vs char*: qual utilizar?
+
+https://www.codingninjas.com/codestudio/library/whats-the-difference-between-char-s-and-char-s-in-c
+
 # Arrays Multidimensionais
+
+*char const *const *const strings
+
+https://stackoverflow.com/questions/34174761/char-const-const-const-varname
 
 # Arrays e Funções
 
