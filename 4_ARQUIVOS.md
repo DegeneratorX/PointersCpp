@@ -30,7 +30,7 @@ Abordarei aqui sobre linking, namespace, outros arquivos .cpp, .h, #include, mai
 
 - TODO
 
-# Declarações VS Definições
+# Declarações VS Definições (avançado)
 
 - TODO
 
