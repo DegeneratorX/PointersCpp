@@ -204,8 +204,8 @@ arr = new int[tamanho];
 Uma string é um conjunto de caracteres normalmente concatenados na memória. Existem diversas formas de representar strings em um programa em C++, e isso será discutido de forma muito aprofundada logo no próximo tópico. Por hora, basta saber que as duas formas mais convencionais de representar uma string em C++ são essas:
 
 ```cpp
-const char* ptr = "Ola mundo"
-std::string str = "Ola mundo com lib" // #include<string>
+const char* ptr = "Ola mundo" // primitivo, rápido
+std::string str = "Ola mundo com lib" // #include<string>, sofisticado (usa classe), lento
 ```
 
 Uma string literal é uma string imutável alocada na .rodata segment. Ou seja, alocada no executável em tempo de compilação (veja sobre alocação no arquivo CONCEITOS.md). 
@@ -216,9 +216,9 @@ Por exemplo, acima temos o caso 'const char*', que é um ponteiro, e o "Ola mund
 cout << "Sou uma string literal" << endl;
 ```
 
-Por ela estar na .rodata, é somente read-only (leitura). E para evitar sua modificação através de ponteiros, o compilador do C++ decide tratar toda string literal como *const*. Ou seja, uma string literal no C++ é do tipo **const char[]**, e qualquer ação bizarra de tentar modificar essa string literal através de ponteiros pode causar erros de segmentation fault. Isso será aprofundado também já no próximo tópico.
+Por ela estar na .rodata, é somente read-only (leitura). E para evitar sua modificação através de ponteiros, o compilador do C++ decide tratar toda string literal como *const*. Ou seja, uma string literal no C++ é do tipo **const char[]** quando trazida pro programa, e qualquer ação bizarra de tentar modificar essa string literal através de ponteiros pode causar erros de segmentation fault. Isso será aprofundado também já no próximo tópico.
 
-A imutabilidade de strings literais se tornou tendência no mercado. Um dos maiores problemas do C é o fato de que a string literal é do tipo **char[]**, o que não faz sentido, dado que esse tipo de dado não deve ser modificável pelo programado, pois ele estaria alterando, em tempo de execução, dados do próprio arquivo fonte que sequer são para escrita. O C++ resolveu esse problema parcialmente e adicionou o *const*. Infelizmente devida a retrocompatibilidade com C, o problema realmente ficou resolvido somente de forma parcial, e isso será detalhado no tópico "Herança do C: const virando mutável?".
+A imutabilidade de strings literais se tornou tendência no mercado. Um dos maiores problemas do C é o fato de que a string literal é do tipo **char[]**, o que não faz sentido, dado que esse tipo de dado não deve ser modificável pelo programador, pois ele estaria alterando, em tempo de execução, dados do próprio arquivo fonte que sequer são para escrita. O C++ resolveu esse problema parcialmente e adicionou o *const*. Infelizmente devida a retrocompatibilidade com C, o problema realmente ficou resolvido somente de forma parcial, e isso será detalhado no tópico "Herança do C: const virando mutável?".
 
 Hoje a imutabilidade de strings literais virou tendência de mercado, e praticamente toda linguagem de programação de alto nível já trata strings como imutáveis.
 
@@ -232,8 +232,7 @@ Hoje a imutabilidade de strings literais virou tendência de mercado, e praticam
 - const char[]
 - const char*
 - std::string (lib)
-- outros (w_char_t, char'Number'_t, std::wstring)
-- char[] vs char*: qual utilizar?
+- outros (wchar_t, char'Number'_t, std::wstring)
 
 ## char
 
@@ -364,28 +363,136 @@ Sua diferença convencional para o 'char[]' está no fato de que o "const" prome
 O const char[] é útil para casos onde é preciso fazer uma cópia de uma string literal, mas é preciso passar esse 'const char[]' em parâmetro de uma função, que se reduz a uma passagem por referência (abordo sobre isso no tópico *Arrays e Funções*).
 
 ```cpp
-const char[] = "Ola";
+const char[] str = "Ola";
 ```
 
 ## const char*
 
 O **'const char*'** é o tipo mais utilizado em C++ para casos onde a std::string não pode ser utilizada ou o sistema necessita de mais performance. O motivo do **'const char*'** ser utilizado mais que qualquer outro tipo de representação de char é o simples fato de que toda string literal em C++ é automaticamente alocada como **const char[]**, e o ponteiro para essa string literal é de apenas 8 bytes (const char*). O fato de ser *const* é para evitar que o programador modifique dados na .rodata via derreferência do ponteiro, afinal, diferente do const char[], o const char* não faz cópia alguma, pois é apenas um ponteiro, o que torna seu uso extremamente eficiente.
 
-E o fato de que strings que o ponteiro aponta são literais, ela ficará guardada na .rodata para poder ser usada em O(1) a qualquer momento do programa.
+O fato de que as **strings** que o ponteiro aponta são **literais** (e portanto guardadas na .rodata), elas podem ser capturadas pelo ponteiros e usadas em O(1) a qualquer momento do programa.
 
 Em C++, o **'const char*'** é somente utilizado no lugar da biblioteca convencional std::string em situações onde a performance da aplicação precisa ser priorizada, pois std::string aloca string na heap.
 
-
+```cpp
+const char* str = "Ola";
+```
 
 ## std::string
 
+O uso da Classe std::string é convencional no C++ para praticamente tudo, pois ela oferece uma série de métodos que podem facilitar muito o trabalho com strings.
+
+```cpp
+std::string str = "Ola";
+```
+
+Documentação não oficial mastigada:
+https://www.geeksforgeeks.org/stdstring-class-in-c/
+
+A instância de pode ser alocado tanto na Stack quanto na Heap. Porém, a string em si é guardada na heap, e todas as suas operações também são feitas na heap.
+
+A Classe também permite fazer certas *operation overloadings*.
+
+### Concatenação
+
+```cpp
+std::string str = "Ola" + " mundo"; // ERRO!
+
+std::string str = "Ola";
+std::string str = str + " mundo"; // OK!
+
+std::string str = std::string("Ola") + " mundo"; // OK! Chamo o construtor da string.
+```
+
+A concateação se utiliza do *operator overloading*, que são métodos de classe que capturam o uso de operadores como "=,*,+,-,<<, >>, &, []" e por ai vai.
+Mais detalhes em: https://www.geeksforgeeks.org/operator-overloading-c/
+
+### Descobrir se tem uma string na string.
+
+```cpp
+std::string str = "Ola mundo";
+bool contem = str.find("und") != std::string::npos;
+```
+
+O método *find()* retorna a posição do texto. Já o *npos* é um static const de valor -1. Se find() retornar -1, significa que será igual a npos, ou seja, não encontrou a string dentro da outra, e contem será **false**.
+
+
 ## Outros chars
+
+Existem diversos outros chars. Irei trabalhar com o padrão ASCII, que também é compatível com o sistema UTF-8, que é o *char* tradicional. Mas aqui estão as definições mastigadas dos outros tipos:
+
+- wchar_t: Trabalha com a variante UTF16-LE e é 2 bytes (16 bits) no Windows e 4 bytes (32 bits) no Linux.
+- wchar_8: Basicamente um typedef do unsigned char. Trabalha com UTF-8 e é 1 byte (8 bits). Recentemente introduzido na versão C++20.
+- wchar_16: Trabalha com o sistema UTF-16 e é 2 bytes (16 bits).
+- wchar_32: Trabalha com o sistema UTF-32 e é 4 bytes (32 bits).
+- std::wstring: Lib string que trabalha com wchar_t.
 
 # char[] vs char*: qual utilizar?
 
+- O char[] é um array. O char* é um ponteiro.
+
+- O sizeof() de um char[] é a quantidade de caracteres da string. O sizeof() de um char* é 8 bytes (tamanho do ponteiro).
+
+- Strings literais com char[] são copiados da .rodata para a pilha. Strings literals com char* não existe cópia, é apontado direto pra .rodata.
+
+- É possível editar elementos em um char[], pois é feita uma cópia da string literal para a pilha. Não é possível editar elementos em um char*, pois o ponteiro aponta pra string literal diretamente na .rodata.
+
+Outros exemplos:
+
+```cpp
+char arr_str[] = "Ola";
+char* ptr_str = "Ola";
+
+arr_str[0] = 'T'; // VÁLIDO.
+ptr_str[0] = 'T'; // INVÁLIDO.
+
+arr_str++; // INVÁLIDO.
+ptr_str++; // VÁLIDO.
+
+arr_str = "Mundo!" // INVÁLIDO.
+ptr_str = "Mundo!" // VÁLIDO.
+```
+
+- É possível derreferenciar char[], por se tratar de uma cópia da string literal. Não é possível derreferenciar char*, pois o ponteiro aponta direto pra .rodata, onde está a string literal.
+
+- Não é possível incrementar um array. E possível incrementar um ponteiro para acessar novos endereços.
+
+- Não é possível reatribuir char[] ou qualquer outro array (isso teria que ser feito elemento por elemento). É possível reatribuir valores em um char*, que basicamente muda pra onde o char* aponta (lembrando que a string literal é um array com endereço, ou seja, o char* com a reatribuição passa a apontar para esse novo array "Mundo").
+
+Mais detalhes em:
 https://www.codingninjas.com/codestudio/library/whats-the-difference-between-char-s-and-char-s-in-c
 
 # Herança do C: const virando mutável?
+
+> Nota: ler o tópico sobre *const* e *String literal*.
+
+Existe um único caso em todo o C++ onde é possível passar um *const 'type'* para um não-const via referẽncia.
+
+Normalmente esse comportamento é proibido, como já falado no tópico *Const Caso 2 - Referência*.
+
+Mas a exceção está aqui:
+
+```cpp
+char* str_ptr = "Ola mundo";
+```
+
+A string literal é um *const char[]*, e esse endereço é passado via referência (por se tratar de um array) para uma variável não const. Como isso é possível?
+
+O principal motivo é a herança do C e a manutenção da retrocompatibilidade. O objetivo principal do C++ foi herdar tudo do C e ser um superset do C, mas a muito tempo já divergiram. Porém, o objetivo de ser compatível com o C o máximo possível ainda se mantém.
+
+Em C, a string literal *"Ola mundo"* é trazida da .rodata como **char[]**. Isso é bizarro, dado que permite que o programador mude caracteres acessando índices (derreferenciando) o array de forma irrestrita, resultando em erros já discutidos no tópico das strings literais.
+
+Porém, o C++ adicionou a keyword *const*, porém isso não resolveu o problema. Existe uma conversão implícita proposital de const char[] para char* no exemplo acima, e essa conversão implícita só é feita por conta dessa tentativa de compatibilidade com C. A IDE ou vscode podem alertar que o C++ proíbe convencionalmente essa conversão, mas ela não deixa de ser possível. Portanto, o ponteiro *str_ptr* pode ser usado para derreferenciar e mudar valores da string literal, causando Undefined Behaviours.
+
+Agora veja esse exemplo:
+
+```cpp
+char str_arr[] = "Ola mundo";
+```
+
+Aqui a conversão também existe, mas ela não é tão grave, dado que essa operação cria um array na Stack que aponta para uma cópia da string literal na Stack tirada da .rodata, como já discutido no tópico **char[] vs char*: qual utilizar?'**. Já na conversão do exemplo str_ptr, o ponteiro na Stack aponta direto pra .rodata, sem cópia nenhuma da String. Modificar strings na Stack ou Heap não há problema. Porém modificar na .rodata é acessar um ponto de memória que o programador ou o programa não tem autorização para acessar (segmentation fault, ou falha de segmentação de memória).
+
+Conclusão: mesmo que em C++ seja "permitido" atribuir a char* uma string literal, o interessante e convencional é usar a keyword **const** sempre.
 
 # Arrays Multidimensionais
 

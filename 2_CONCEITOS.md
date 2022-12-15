@@ -780,28 +780,82 @@ Ao passar por cópia, as variáveis objeto agem de forma independente, inclusive
 ### Caso 2 - Referência
 
 ```cpp
-void imprime_com_const(const int* objeto_1){
-    objeto_1 = new int(3); // OK, pois estou mudando o endereço do ponteiro, não o valor do int anônimo na memória
-    //*objeto_1 = 30;      // ERRO! Estou mudando o valor do int anônimo na memória, que é um const.
-    cout << *objeto_1 << endl;
+void imprimir_const(const int* objeto){
+    cout << objeto << endl;
 }
-void imprime_sem_const(int* objeto_2){
-    objeto_2 = new int(3); // ERRO! 
+void imprimir(int* objeto){
+    cout << objeto << endl;
+}
 
-}
 int main(){
     int* objeto_1 = new int(10);
-    const int* objeto_2 = new int(20);
+    const int* objeto_2 = new int (20);
 
-    imprime_com_const(objeto_1);
+    imprimir_const(objeto_1); // OK! Um int* pode se tornar um const int* como parâmetro da função, mas não o contrário.
+    imprimir_const(objeto_2); // OK!
+
+    imprimir(objeto_1); // OK!
+    imprimir(objeto_2); // ERRO! Um const int* não pode ser passado para um int*. Isso é para prevenir derreferência e mudança do valor constante na heap.
 }
 ```
 
+O mesmo caso se aplica se o const fosse atrelado ao ponteiro **(int* const objeto)**.
 
 
 ## Const como retorno de um valor de uma função
 
+```cpp
+const int get_idade(){
+    return this->idade;
+}
+```
 
+A operação acima é inútil, tanto pra método quanto função. Const como retorno de função faz basicamente nada. O retorno de uma função é um r-value, o que já o torna não modificável.
+
+## Const como conteúdo de uma método
+
+```cpp
+int get_idade() const{ // Coloco após o método.
+    return this->idade;
+}
+
+void set_idade(int idade) const{
+    int i = 10; // Permitido
+    char* str = "Ola"; // Permitido
+    i = 4; str = "Mundo". // Permitido
+
+    this->idade = idade; // PROIBIDO
+}
+```
+
+A operação acima proíbe qualquer tipo de modificação de atributos de uma Classe dentro de um método. Outras variáveis inicializadas e atribuidas são permitidas.
+
+> Nota: isso só funciona com métodos. O uso em funções fora de Classes causará erro na compilação.
+
+## Const como instanciação de Classe
+
+```cpp
+class Pessoa{
+    int idade;
+public:
+    Pessoa(int idade){this->idade = idade;}
+    
+    int get_idade() const{ // Método com conteúdo const
+        return this->idade;
+    }
+
+    void set_idade(int idade){ // Método com conteúdo não const
+        this->idade = idade;
+    }
+};
+int main(){
+    const Pessoa p(32); // p é uma instância constante. Isso significa que só posso chamar métodos com conteúdo constante.
+    int idade = p.get_idade(); // OK, pois o método que se chama tem conteúdo constante.
+    p.set_idade(22); // ERRO! Chamei um método com conteúdo não constante.
+}
+```
+
+Basicamente uma instância de classe const só pode chamar métodos com conteúdo const. Atributos da classe também não podem ser modificados pela instância. Tudo isso combinado previne que qualquer valor dessa instância seja modificado.
 
 # Entendido o básico de conceitos...
 
