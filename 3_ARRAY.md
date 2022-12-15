@@ -89,12 +89,12 @@ Apesar do uso expressivo da classe std::string, o const char* será muito detalh
 
 # Arrays e Ponteiros
 
-Um array é um ponteiro. Um ponteiro que aponta pro primeiro elemento de um bloco de dados. A sintaxe do array com o uso do operador [] para acessar índices de um array é puramente açúcar sintático para melhorar a leitura do código.
+Um array é um ponteiro. Um ponteiro que aponta pro primeiro elemento de um bloco de dados.
 
 Se eu quero acessar o último elemento do array e imprimir, basta eu fazer isso:
 
 ```cpp
-array[6] = {20, 40, 60, 80, 100, 120}; // Array de 6 elementos, index 0 a 5
+int array[6] = {20, 40, 60, 80, 100, 120}; // Array de 6 elementos, index 0 a 5
 cout << array[5] << endl; // index 5 é o último elemento. Index 6 é lixo.
 ```
 
@@ -105,7 +105,7 @@ E isso é equivalente a isso aqui (derreferência):
 cout << *(array+5) << endl; // 120
 ```
 
-Ou seja, o índex e o operador [] são praticamente um açúcar sintático, pois de trás dos panos o que ocorre é uma derreferência. Portanto, isso aqui tudo vale:
+A sintaxe do array com o uso do operador [] para acessar índices de um array é puramente açúcar sintático para melhorar a leitura do código. Ou seja, o índex dentro do operador [] é praticamente um açúcar sintático, pois de trás dos panos o que ocorre é uma derreferência. Portanto, isso aqui tudo vale:
 
 ```cpp
 array[5] == *(array+5); // True - 120
@@ -137,6 +137,8 @@ int array[10];
 E obviamente é preciso acessar o conteúdo desse endereço através do operador '*'.
 
 > Nota: o uso do operador [] (squarebrackets) é obrigatório para inicializar o array no momento da declaração ou inicialização (exceto com strings, ver tópico sobre char*). Ele não é um açúcar sintático nesses momentos. A sua função é definir um bloco de memória e o seu tamanho, que é o tamanho do array. Porém, ao acessar valores do array usando índices dentro dos colchetes, [] se torna um operador de derreferência e açúcar sintático. Seu uso é alternativo, podendo ser substituído pelo operador de derreferência '*' (não convencional).
+
+> Nota 2: baseado nisso tudo, é preciso saber que int* é diferente de int[]. Os dois são ponteiros, mas possuem comportamentos diferentes. Suas principais diferenças serão discutidas no tópico **char[] vs char*: qual utilizar?**.
 
 
 # Alocação de arrays
@@ -197,9 +199,32 @@ arr = new int[tamanho];
 
 > Nota: para manter o track do tamanho de um array, é interessante ter o auxílio de Classes. Caso contrário, pode ser difícil implementar. Mas de qualquer forma, std::array já faz esse track, e é altamente recomendado seu uso como substituto do array primitivo do C para muitos casos, pois tem baixíssimo impacto na performance.
 
+# String literal
+
+Uma string é um conjunto de caracteres normalmente concatenados na memória. Existem diversas formas de representar strings em um programa em C++, e isso será discutido de forma muito aprofundada logo no próximo tópico. Por hora, basta saber que as duas formas mais convencionais de representar uma string em C++ são essas:
+
+```cpp
+const char* ptr = "Ola mundo"
+std::string str = "Ola mundo com lib" // #include<string>
+```
+
+Uma string literal é uma string imutável alocada na .rodata segment. Ou seja, alocada no executável em tempo de compilação (veja sobre alocação no arquivo CONCEITOS.md). 
+
+Por exemplo, acima temos o caso 'const char*', que é um ponteiro, e o "Ola mundo" é uma string literal. Ou seja, uma string bruta escrita no código fonte, e o ponteiro 'ptr' aponta pra ela.
+
+```cpp
+cout << "Sou uma string literal" << endl;
+```
+
+Por ela estar na .rodata, é somente read-only (leitura). E para evitar sua modificação através de ponteiros, o compilador do C++ decide tratar toda string literal como *const*. Ou seja, uma string literal no C++ é do tipo **const char[]**, e qualquer ação bizarra de tentar modificar essa string literal através de ponteiros pode causar erros de segmentation fault. Isso será aprofundado também já no próximo tópico.
+
+A imutabilidade de strings literais se tornou tendência no mercado. Um dos maiores problemas do C é o fato de que a string literal é do tipo **char[]**, o que não faz sentido, dado que esse tipo de dado não deve ser modificável pelo programado, pois ele estaria alterando, em tempo de execução, dados do próprio arquivo fonte que sequer são para escrita. O C++ resolveu esse problema parcialmente e adicionou o *const*. Infelizmente devida a retrocompatibilidade com C, o problema realmente ficou resolvido somente de forma parcial, e isso será detalhado no tópico "Herança do C: const virando mutável?".
+
+Hoje a imutabilidade de strings literais virou tendência de mercado, e praticamente toda linguagem de programação de alto nível já trata strings como imutáveis.
+
 # char VS const char VS std::string VS outros
 
-String nada mais é do que um array de caracteres. Existem diversas formas de representar caracteres e um array que contém caracteres. As principais são:
+ Existem diversas formas de representar caracteres e strings, que é um array que contém caracteres. As principais são:
 
 - char
 - char[]
@@ -241,15 +266,19 @@ char outra_letra = 64; // Sim, char pode receber número.
 cout << outra_letra << endl; // Printará '@'
 ```
 
-## Char[]
+O tipo *char* é muito primitivo, e atualmente é pouquíssimo utilizado por convenção. Possui inúmeras limitações. Mas é ideal para entender como funcionam as strings, que nada mais são do que um array de char.
 
-O char[] é o tipo string primitivo herdado do C. É um tipo muito pouco utilizado (juntamente com char*) devida a superioridade do 'const char*' ao evitar bugs indesejados e comportamentos estranhos (undefined behaviours).
+## char[]
 
-Perceba o uso de aspas simples '' para o tipo *char*. Já as aspas duplas "" define o tipo char[] (ou char*). Essa é uma forma básica de diferenciar um char de um char[]/char*. Ao passar o mouse em cima de uma string já com aspas duplas usando uma IDE ou vscode, geralmente aparecerá const char[].
+O **char[]** é o tipo de dado primitivo padrão em C para strings literais. Já em C++, houve a adição de um 'const' para strings literais. Será detalhado no tópico 'const char[]'.
 
-################### PAREI AQUI
+É um tipo muito obsoleto (juntamente com char*) em C++. Isso porque ao inicializar uma variável do tipo **char[]**, o programador estará criando uma cópia da string literal da .rodata na stack, o que afeta muito a performance, principalmente se a string for grande, o que poderia ser bem possível (Exemplo: 1000 caracteres = 1KB na stack ocupado).
 
-Tipo *char* é muito primitivo, e atualmente é pouquíssimo utilizado por convenção. Possui inúmeras limitações. Mas é ideal para entender como funcionam as strings, que nada mais são do que um array de char.
+Ou seja, o seu uso é raro devido ao fator de cópia, que cria uma operação de iteração por toda a string O(n) e ainda ocupa espaço na pilha que depende do número de caracteres, já que se trata de uma cópia direta do que estava na .rodata. 
+
+Supondo uma mutabilidade da string literal, alterar qualquer coisa nela precisaria iterar sobre a string novamente O(n) na .rodata para uma checagem e nova cópia. E O(n) se aplicará sempre que houver mudanças mesmo que sejam mínimas (como um simples caractere), e portanto seria um big deal para performance.
+
+Perceba o uso de aspas simples '' para o tipo *char*. Já as aspas duplas "" define o tipo char[] (ou char*). Essa é uma forma básica de diferenciar um char de um char[]/char*. Ao passar o mouse em cima de uma string já com aspas duplas usando uma IDE ou vscode, geralmente aparecerá 'const char[]'.
 
 Eis alguns exemplos de um array de char:
 
@@ -270,9 +299,17 @@ Diversas formas de inicializar um array de char.
 
 - Em **arr_2** e **arr_4**, é possível inicializar sem definir um tamanho. O compilador já aloca inteligentemente o tamanho baseado no que recebe.
 
+Também é possível também acessar índices, ou seja, derreferenciar e acessar caracteres da string. E por se tratar de uma cópia da string literal, posso também substituir esses caracteres derreferenciando.
+
+```cpp
+char arr[] = "Ola";
+arr[2] = 'e';
+cout << arr << endl; // Printará "Ole"
+```
+
 > Nota: Para reforçar, **array de char = string**. Portanto, para todos os exemplos desse tópico acima (incluindo o arr_1 e arr_2), são strings, mesmo definindo caractere por caractere no array. É uma string.
 
-## char* - TODO: FALAR SOBRE ALOCAÇÃO NA HEAP
+## char*
 
 O char* possui semelhanças explícitas com o char[], incluindo a forma de inicializar, mas existem diferenças sucintas por trás dos panos e em algumas sintaxes de inicialização.
 
@@ -283,7 +320,7 @@ char str[] = "Ola";
 
 Qual a diferença? Será abordada no tópico **"char[] vs char*: qual utilizar?"** devida a alta complexidade e quantidade de informações. Por hora basta saber que as duas são aparentemente equivalentes, a fim de não causar confusão.
 
-Também é possível alocar a string na heap graças ao uso de um ponteiro na stack.
+Também é possível alocar uma string na heap graças ao uso de um ponteiro na stack.
 
 ```cpp
 char* arr = new char[4];
@@ -320,25 +357,35 @@ https://www.geeksforgeeks.org/const-keyword-in-cpp/
 
 ## const char[]
 
-- TODO
+O **const char[]** é o tipo de dado padrão em C++ para strings literais, porém não muito utilizado para tipos de variáveis criadas pelo programador pelo mesmo motivo do char[], a baixa performance.
+
+Sua diferença convencional para o 'char[]' está no fato de que o "const" promete que a variável não será modificada de forma alguma. Ou seja, indexar e mudar caracteres é proibido. 
+
+O const char[] é útil para casos onde é preciso fazer uma cópia de uma string literal, mas é preciso passar esse 'const char[]' em parâmetro de uma função, que se reduz a uma passagem por referência (abordo sobre isso no tópico *Arrays e Funções*).
+
+```cpp
+const char[] = "Ola";
+```
 
 ## const char*
 
-O **'const char*'** é o tipo mais utilizado em C++ para casos onde a std::string não pode ser utilizada. O motivo do **'const char*'** ser utilizado mais que o char* é o simples fato de que toda string criada com aspas duplas " " é automaticamente criada na memória como **'const char*'**. Isso é decisão pura do Bjarne Stroustrup (criador do C++), por talvez acreditar que as strings devam ser imutáveis para evitar o já falado undefined behaviour.
+O **'const char*'** é o tipo mais utilizado em C++ para casos onde a std::string não pode ser utilizada ou o sistema necessita de mais performance. O motivo do **'const char*'** ser utilizado mais que qualquer outro tipo de representação de char é o simples fato de que toda string literal em C++ é automaticamente alocada como **const char[]**, e o ponteiro para essa string literal é de apenas 8 bytes (const char*). O fato de ser *const* é para evitar que o programador modifique dados na .rodata via derreferência do ponteiro, afinal, diferente do const char[], o const char* não faz cópia alguma, pois é apenas um ponteiro, o que torna seu uso extremamente eficiente.
 
-E o fato de que strings normalmente são imutáveis em QUALQUER linguagem de programação de alto nível atualmente, é que strings são uma lista de caracteres, e sendo ela imutável, ficará guardada na memória para poder ser usada em O(1) durante uma cópia a qualquer momento do programa. Supondo uma mutabilidade da string, alterar qualquer coisa nela precisaria iterar sobre a string novamente O(n) no banco de memória de strings para uma checagem e nova cópia. E O(n) se aplicará sempre que houver mudanças mesmo que mínimas (como um simples caractere), e portanto seria um big deal para performance.
+E o fato de que strings que o ponteiro aponta são literais, ela ficará guardada na .rodata para poder ser usada em O(1) a qualquer momento do programa.
 
 Em C++, o **'const char*'** é somente utilizado no lugar da biblioteca convencional std::string em situações onde a performance da aplicação precisa ser priorizada, pois std::string aloca string na heap.
 
-*char const *const *const strings
+
 
 ## std::string
 
 ## Outros chars
 
-## char[] vs char*: qual utilizar?
+# char[] vs char*: qual utilizar?
 
 https://www.codingninjas.com/codestudio/library/whats-the-difference-between-char-s-and-char-s-in-c
+
+# Herança do C: const virando mutável?
 
 # Arrays Multidimensionais
 
@@ -349,6 +396,8 @@ https://stackoverflow.com/questions/34174761/char-const-const-const-varname
 # Arrays e Funções
 
 ## Arrays como parâmetro de funções
+
+*char const *const *const strings
 
 ## Arrays como retorno de funções
 

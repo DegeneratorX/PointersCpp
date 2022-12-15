@@ -149,6 +149,7 @@ Existem quatro tipos de alocações:
 - Automática (na pilha, temporária no escopo)
 - Estática (na data segment e bbs segment, ambos no executável, existem até o programa encerrar)
 - Dinâmica (na heap, existe até o programa encerrar, deletável em tempo de execução)
+- Rodata (no executável, existe até o programa encerrar)
 
 ![image](https://user-images.githubusercontent.com/98990221/206921825-6f1813c4-3f3b-4d05-bafb-5747081a57b0.png)
 
@@ -238,9 +239,9 @@ delete a;
 
 > Nota: isso será aprofundado mais pra frente e no tópico sobre Pilhas e Heap.
 
-### Extra: alocação especial de constantes (rodata segment)
+### Alocação .rodata (rodata segment)
 
-- A alocação de memória para constantes é feita em tempo de compilação na **read-only data segment** (rodata segment), que fica no próprio executável (object file). Reserva o espaço necessário para as constantes (exemplo: strings constantes). Possui armazenamento fixo e é read-only. Morre assim que o programa termina.
+- A alocação de memória para constantes é feita em tempo de compilação na **read-only data segment** (rodata segment), que fica no próprio executável (object file). Reserva o espaço necessário para as constantes (exemplo: strings literais). Possui armazenamento fixo e é read-only. Morre assim que o programa termina.
 
 > Nota: não se trata dos 'const'. A keyword 'const' apenas proíbe uma variável de ser modificada, mas ela não deixa de ser variável. É como se fosse uma promessa, mas qualquer promessa pode ser quebrada. Com 'const', o compilador sempre assume que a variável não foi e não será mudada, mas não é garantia. Há um mito de que 'const' gera ganho de desempenho do programa, mas é comprovadamente falso. Ou seja, normalmente na .rodata contém objetos imutáveis presentes no programa, como strings literais. Nada de variáveis 'const'.
 
@@ -689,7 +690,7 @@ Mas no caso da Pilha estar cheia, o que é difícil acontecer em programas bem o
 
 # Const
 
-A keyword **const** é uma promessa (contrato) que o programador firma com o compilador de que a variável não deverá ser alterada. E o compilador previne a sua mudança e a torna imutável. Mas não há garantia.
+A keyword **const** é uma promessa (contrato) que o programador firma com o compilador de que a variável não deverá ser alterada. E o compilador previne a sua mudança e a torna imutável, mas não há garantia.
 
 Ela pode ser utilizada de várias formas. Mas é obrigatório que se inicialize a variável caso use **const**. Somente declaração não é suficiente.
 
@@ -700,7 +701,7 @@ Ela pode ser utilizada de várias formas. Mas é obrigatório que se inicialize 
 const int a; //ERRO
 const int b = 10;
 b = 5; // ERRO
-int const c = 17; // OK
+int const c = 17; // Equivalente a const int. OK
 ```
 
 > Nota: 'const int' e 'int const' são válidos e equivalentes. Fazem a mesma coisa. Porém, no próximo tópico, ao utilizar ponteiros, essa troca possui diferenças.
@@ -715,7 +716,7 @@ int* const b = &x; // Caso 2
 const int* const c  = &x; // Caso 3
 ```
 
-- Caso 1: Derreferenciar 'a' é proibido. Você pode mudar diretamente 'x', já que não é const, mas não pode mudar 'x' através de 'a' com derreferencia, pois 'a' é um ponteiro que aponta pra um int constante (const int). Ex: *a = 10. Erro!
+- Caso 1: Derreferenciar 'a' é proibido. Você pode mudar diretamente 'x', já que 'x' não é const, mas não pode mudar 'x' através de 'a' com derreferencia, pois 'a' é um ponteiro que aponta pra um int constante (const int). Ex: *a = 10. Erro!
 
 - Caso 2: Mudar o ponteiro b pra onde ele vai apontar é proibido. 'b' é um ponteiro constante que aponta pra um inteiro (const b). Ex: b = &j. Erro!
 
@@ -729,10 +730,77 @@ int x = 55;
 int const* a = &x; // Mais utilizado para arrays multidimensionais.
 ```
 
+Outra regra de const com ponteiros é o caso de proibição de atribuição:
 
-## Const em método
+```cpp
+const int* a = new int(44); // Caso 1: inteiro anônimo constante
+int* b = a; // ERRO!
 
-- TODO
+int* const a = new int(44); // Caso 2: ponteiro constante
+int** b = &a; // ERRO!
+```
+
+- Em ambos os casos, estou tentando "burlar a promessa" de não modificar valores const através de referências. Pois se não desse erro, eu poderia dereferenciar 'b' em ambos os casos. Derreferenciando 'b', eu posso no *caso 1* mudar o conteúdo de 'a', e no *caso 2* posso mudar pra onde o 'a' aponta.
+
+- Para evitar derreferência, o C++ proíbe que esse tipo de operação acima seja possível. Porém, existe um ÚNICO caso onde isso é permitido, que é no seguinte caso:
+
+```cpp
+char* str = "Ola mundo";
+```
+
+Parece esquisito, afinal não tem const visível. Porém ele existe, é o próprio "Ola mundo". Um 'const char*'. Essa conversão é a única possível devida a retrocompatibilidade com C. Essa parte será discutida no arquivo ARRAYS.md.
+
+## Const como parâmetro de função
+
+Existem alguns casos que se trabalha com const em parâmetro de função
+
+### Caso 1 - Cópia
+
+```cpp
+// passo um não-const para um const como parâmetro
+void imprime_com_const(const int objeto_1){
+    // objeto_1 = 3; ERRO!
+    cout << objeto_1 << endl;
+}
+
+// passo um const para um não const como parâmetro
+void imprime_sem_const(int objeto_2){
+    // objeto_2 = 3; OK!
+    cout << objeto_2 << endl;
+}
+
+int main(){
+    int objeto_1 = 10; imprime_com_const(objeto_1);
+    const int objeto_2 = 20; imprime_com_const(objeto_2);
+}
+```
+
+Ao passar por cópia, as variáveis objeto agem de forma independente, inclusive quando são constantes. Modificar uma não-const por parâmetro não vai afetar ela const na main. Por se tratar de cópia, são dois objetos completamente distintos.
+
+### Caso 2 - Referência
+
+```cpp
+void imprime_com_const(const int* objeto_1){
+    objeto_1 = new int(3); // OK, pois estou mudando o endereço do ponteiro, não o valor do int anônimo na memória
+    //*objeto_1 = 30;      // ERRO! Estou mudando o valor do int anônimo na memória, que é um const.
+    cout << *objeto_1 << endl;
+}
+void imprime_sem_const(int* objeto_2){
+    objeto_2 = new int(3); // ERRO! 
+
+}
+int main(){
+    int* objeto_1 = new int(10);
+    const int* objeto_2 = new int(20);
+
+    imprime_com_const(objeto_1);
+}
+```
+
+
+
+## Const como retorno de um valor de uma função
+
 
 
 # Entendido o básico de conceitos...
