@@ -87,9 +87,9 @@ Irei detalhar apenas os mais importantes pra falar sobre arrays.
 Apesar do uso expressivo da classe std::string, o const char* será muito detalhado nesse arquivo.
 
 
-# Arrays e Ponteiros
+# Arrays e aritmética de ponteiros
 
-Um array é um ponteiro. Um ponteiro que aponta pro primeiro elemento de um bloco de dados.
+Um array "é" um ponteiro. Um ponteiro que aponta pro primeiro elemento de um bloco de dados.
 
 Se eu quero acessar o último elemento do array e imprimir, basta eu fazer isso:
 
@@ -141,12 +141,48 @@ E obviamente é preciso acessar o conteúdo desse endereço através do operador
 > Nota 2: baseado nisso tudo, é preciso saber que int* é diferente de int[]. Os dois são ponteiros, mas possuem comportamentos diferentes. Suas principais diferenças serão discutidas no tópico **char[] vs char*: qual utilizar?**.
 
 
-# Alocação de arrays
+## Diferenças entre Arrays e Ponteiros
+
+Existem algumas diferenças entre arrays e ponteiros. Arrays tendem a receber cópia de dados e alocar um espaço de memória para eles. Já um ponteiro aponta diretamente para um dado, sem fazer cópias. O objeto *array* em si é um ponteiro que guarda um endereço que aponta pro primeiro elemento de seu bloco de memória. O ponteiro faz a mesma coisa, porém ele não cria espaço para isso. O espaço foi criado por outra entidade qualquer.
+
+- Sizeof são diferentes:
+
+```cpp
+int arr[15]; // 60 bytes = 15 * 4 bytes (int)
+int* ptr = arr; // ptr recebe o endereço "arr". Passa a apontar pro mesmo primeiro elemento que arr.
+cout << sizeof(arr) << endl; // Output: 60 (bytes)
+cout << sizeof(ptr) << endl; // Output: 8 (bytes)
+cout << sizeof(*ptr) << endl; // Output: 4 (bytes) (Captura o tamanho do int do primeiro elemento do array)
+```
+
+- Atribuição de endereços a um array é proibido:
+
+```cpp
+int arr[] = {10, 20};
+int *ptr = new int(23); // *ptr = 23
+int x = 5;
+
+ptr = &x; // OK! 'ptr' agora aponta para x. *ptr = 5
+arr = &x;  // ERRO!
+```
+
+
+## Semelhanças entre Arrays e Ponteiros
+
+- O objeto array guarda o endereço para o primeiro elemento, assim como um ponteiro.
+- Membros de um array são acessados por derreferência (artimética de ponteiros).
+- Parâmetros de uma função com arrays são automaticamente reduzidos a uma passagem de ponteiro, mesmo usando os brackets [].
+
+> Nota: ver mais sobre a última semelhança no tópico "Arrays como parâmetro de funções".
+
+Mais em: https://www.geeksforgeeks.org/difference-pointer-array-c/
+
+# Alocação de Arrays
 
 Existem algumas formas de alocar espaço para arrays. Na **pilha** e na **heap** são as principais. Alocação na **data and bss segment** também é possível, mas é mais uma derivação desses dois primeiros casos, e não será categorizado.
 
 
-## Alocação de arrays na Pilha
+## Alocação de Arrays na Pilha
 
 Um exemplo de alocação automática:
 
@@ -159,7 +195,7 @@ Um exemplo de alocação automática:
 
 O array sofre pop ao sair de um escopo e a memória é liberada.
 
-## Alocação de arrays na Heap
+## Alocação de Arrays na Heap
 
 A alocação dinâmica é um pouco mais elaborada.
 
@@ -170,7 +206,7 @@ delete[] arr;
 
 Da mesma forma, preciso de um ponteiro na stack que aponte pra esse array anônimo na heap que guarda inteiros. A forma como ele aponta é apontando pro primeiro elemento do array. O *new* me retorna esse endereço do primeiro elemento e guarda em *arr*. E a sintaxe para apagar o array é um pouco diferente. As chaves precisam ser postas após o operador *delete*.
 
-# Tamanho do array
+# Tamanho do Array
 
 A definição do tamanho de um array alocado na stack é feita em tempo de compilação. Portanto, é impossível mudar o tamanho de um array na stack em tempo de execução.
 
@@ -332,8 +368,6 @@ delete[] arr;
 
 https://www.google.com/search?q=%5B%5D+vs+*+c%2B%2B&ei=upaXY5vzKbqY1sQPvJixiAs&ved=0ahUKEwibuMj9_PT7AhU6jJUCHTxMDLEQ4dUDCA8&uact=5&oq=%5B%5D+vs+*+c%2B%2B&gs_lcp=Cgxnd3Mtd2l6LXNlcnAQAzIGCAAQFhAeMgYIABAWEB4yBggAEBYQHjIGCAAQFhAeMgYIABAWEB4yBggAEBYQHjIGCAAQFhAeMgYIABAWEB4yBggAEBYQHjIGCAAQFhAeOgsIABAHEB4QsAMQEzoHCAAQgAQQEzoICAAQFhAeEBM6DQgAEIAEELEDEIMBEA06BwgAEIAEEA06CggAEIAEELEDEA06CQgAEBYQHhDxBEoECEEYAUoECEYYAFDLA1jpB2CUCWgBcAB4AIABogGIAesEkgEDMC40mAEAoAEByAEKwAEB&sclient=gws-wiz-serp
 
-https://www.geeksforgeeks.org/difference-pointer-array-c/
-
 https://stackoverflow.com/questions/10760893/c-vs-as-a-function-parameter
 
 https://stackoverflow.com/questions/27890375/int-vs-int-vs-int-in-function-parameters-which-one-should-i-use
@@ -433,9 +467,9 @@ Existem diversos outros chars. Irei trabalhar com o padrão ASCII, que também �
 
 - O sizeof() de um char[] é a quantidade de caracteres da string. O sizeof() de um char* é 8 bytes (tamanho do ponteiro).
 
-- Strings literais com char[] são copiados da .rodata para a pilha. Strings literals com char* não existe cópia, é apontado direto pra .rodata.
+- Strings literais com char[] são copiados da .rodata para a pilha (para a variável char[]). Strings literals com char* não existe cópia, char é um ponteiro que apontado direto pra string literal na .rodata.
 
-- É possível editar elementos em um char[], pois é feita uma cópia da string literal para a pilha. Não é possível editar elementos em um char*, pois o ponteiro aponta pra string literal diretamente na .rodata.
+- É possível editar elementos em um char[], pois é feita uma cópia da string literal para a pilha, onde a variável do tipo char[] recebe essa cópia. Não é possível editar elementos em um char* (derreferenciar), pois o ponteiro aponta pra string literal diretamente na .rodata.
 
 Outros exemplos:
 
@@ -480,7 +514,7 @@ A string literal é um *const char[]*, e esse endereço é passado via referênc
 
 O principal motivo é a herança do C e a manutenção da retrocompatibilidade. O objetivo principal do C++ foi herdar tudo do C e ser um superset do C, mas a muito tempo já divergiram. Porém, o objetivo de ser compatível com o C o máximo possível ainda se mantém.
 
-Em C, a string literal *"Ola mundo"* é trazida da .rodata como **char[]**. Isso é bizarro, dado que permite que o programador mude caracteres acessando índices (derreferenciando) o array de forma irrestrita, resultando em erros já discutidos no tópico das strings literais.
+Em C, a string literal *"Ola mundo"* é trazida da .rodata como **char[]**. Isso é bizarro, dado que permite que o programador "mude" caracteres acessando índices (derreferenciando) o array de forma irrestrita, resultando em erros já discutidos no tópico das strings literais.
 
 Porém, o C++ adicionou a keyword *const*, porém isso não resolveu o problema. Existe uma conversão implícita proposital de const char[] para char* no exemplo acima, e essa conversão implícita só é feita por conta dessa tentativa de compatibilidade com C. A IDE ou vscode podem alertar que o C++ proíbe convencionalmente essa conversão, mas ela não deixa de ser possível. Portanto, o ponteiro *str_ptr* pode ser usado para derreferenciar e mudar valores da string literal, causando Undefined Behaviours.
 
@@ -490,19 +524,109 @@ Agora veja esse exemplo:
 char str_arr[] = "Ola mundo";
 ```
 
-Aqui a conversão também existe, mas ela não é tão grave, dado que essa operação cria um array na Stack que aponta para uma cópia da string literal na Stack tirada da .rodata, como já discutido no tópico **char[] vs char*: qual utilizar?'**. Já na conversão do exemplo str_ptr, o ponteiro na Stack aponta direto pra .rodata, sem cópia nenhuma da String. Modificar strings na Stack ou Heap não há problema. Porém modificar na .rodata é acessar um ponto de memória que o programador ou o programa não tem autorização para acessar (segmentation fault, ou falha de segmentação de memória).
+Aqui a conversão também existe, mas ela não é tão grave, dado que essa operação cria um array na Stack que recebe uma cópia da string literal tirada da .rodata, como já discutido no tópico **char[] vs char*: qual utilizar?'**. Já na conversão do exemplo str_ptr, o ponteiro na Stack aponta direto pra .rodata, sem cópia nenhuma da string literal. Modificar strings na Stack ou Heap não há problema. Porém, querer modificar na .rodata é acessar um ponto de memória que o programador ou o programa não tem autorização para acessar (segmentation fault, ou falha de segmentação de memória).
 
-Conclusão: mesmo que em C++ seja "permitido" atribuir a char* uma string literal, o interessante e convencional é usar a keyword **const** sempre.
+Conclusão: mesmo que em C++ se abra uma exceção (por conta da retrocompatibilidade com C) e seja "permitido" atribuir a char* uma string literal (const char*), o que é bizarro e vai contra o propósito do "const", o interessante e convencional é usar a keyword **const** sempre que criar um ponteiro que aponte pra string literal ou array que receba uma cópia dessa string literal.
 
 # Arrays Multidimensionais
+
+Arrays multidimensionais são arrays dentro de arrays.
+
+Irei trabalha com array de duas dimensões (2D, matriz), que são arrays dentro de um array. 
+
+A forma como se acessa os valores de uma matriz é pareciso com o array de uma dimensão.
+
+## Matriz na pilha
+
+```cpp
+int matriz[3][5] = {
+    {2, 4, 5, 10, 1},
+    {55, 23, 2, 32, 0},
+    {3, 50, 90, 43, 65}
+};
+```
+
+- Inicialização de uma matriz de inteiros na pilha, com 3 linhas (i) e 5 colunas (j).
+
+```cpp
+const char matriz[4][6] = {"Ola", "Mundo", "Arroz", "Feijao"}; // Caso 1
+const char* matriz[] = {"Ola", "Mundo", "Arroz", "Feijao"}; // Caso 2
+std::string matriz[2][2] = { // Caso 3
+    {"Ola", "Mundo"},
+    {"Arroz", "Feijao"}
+};
+```
+
+- Caso 1: Lembrar que string é um array de caracteres. Portanto, o tamanho da linha é definido pela string com a maior quantidade de caracteres + \0. Esse tipo de inicialização faz uma cópia da string literal.
+
+- Caso 2: Caso onde não fica explícito o tamanho da string. O char* é um ponteiro que aponta para um array contendo várias cópias de strings literais.
+
+- Caso 3: Uso mais convencional de strings. Como o tipo std::string é um objeto em si, é possível fazer uma matriz com esses objetos sem levar em consideração que os caracteres também seriam parte de um array. É como se isso fosse, por de trás dos panos, um array 3D.
+
+## Matriz na heap
+
+Inicializar uma matriz na heap é mais complexo. É preciso criar um array na heap de elementos "ponteiros", e cada ponteiro desse aponta para arrays na heap de elementos normais.
+
+Exemplo:
+
+```cpp
+int** matriz = new int*[5]; // Array de 5 elementos na heap 
+for (int i = 0; i < 5, i++){
+    matriz = new int[10];  // para cada elemento, crio um array de tamanho 10.
+}
+// Matriz 5 x 10.
+
+for (int i = 0; i < 5; i++){ // Para deletar da heap faço a mesma coisa.
+    delete[] matriz[i];
+}
+delete[] matriz; // Por fim, deleto o array que guardava arrays.
+```
+
+- Na hora de deletar, é importante **NÃO** deletar o array que guarda arrays diretamente, ou acarretará em memory leak, pois perderemos o conjunto de ponteiros que apontam para aquelas diversas memórias que contém arrays. Ou seja, elas ficarão lá permanentemente e perdidas até o programa encerrar.
+
+- É preciso iterar sobre cada linha e **deletar 1 array por vez**. Após ter liberado toda essa memória para cada linha, libera por fim o array principal.
+
+Esse tipo de criação de matriz é OK, mas não é otimizado, dado que cada linha dessa contém ponteiros diferentes para diversos lugares na heap que apontam para arrays que estão em segmentos distantes na memória. Ou seja, para iterar sobre isso pode ser extremamente lento.
+
+Uma forma de resolver isso é utilizando a seguinte façanha:
+
+```cpp
+int* arr = new int[3 * 7]; // Espaço da matriz já alocado de tamanho 3 x 7.
+for (int i = 0; i < 3; i++){
+    for (int j = 0; j < 7; j++){
+        // Acessando índices. Multiplico sempre a soma deles pela largura da matriz.
+        arr[i + j * 7] = 0; // Preencho a matriz i x j com zeros
+    }
+}
+delete[] arr;
+```
+
+- É possível criar uma representação de uma matriz em um bloco de memória só. Ou seja, em um único array. Isso otimiza absurdamente qualquer acesso que o programador queira sobre essa matriz, pois todos os elementos estarão em um bloco de memória só, com endereços lado a lado.
+
+- Para acessar índices dessa matriz, basta substituir i ou j pelos índices da matriz desejada e multiplicar pela largura da matriz, que nesse caso é 7.
+
+# Arrays e Funções
+
+O objeto *array* possui comportamento diferente quando se utiliza com funções.
+
+## Arrays como parâmetro de funções
+
+**Todo** array passado para um parâmetro de uma função é reduzido a uma passagem por referência.
+
+```cpp
+void imprimir(){
+    
+}
+
+int main(){
+    int vec[] = {2, 4, 7};
+    imprimir();
+}
+```
 
 *char const *const *const strings
 
 https://stackoverflow.com/questions/34174761/char-const-const-const-varname
-
-# Arrays e Funções
-
-## Arrays como parâmetro de funções
 
 *char const *const *const strings
 
