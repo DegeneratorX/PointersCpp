@@ -570,12 +570,13 @@ Inicializar uma matriz na heap é mais complexo. É preciso criar um array na he
 Exemplo:
 
 ```cpp
+// Alocando Matriz 5 x 10.
 int** matriz = new int*[5]; // Array de 5 elementos na heap 
 for (int i = 0; i < 5, i++){
     matriz = new int[10];  // para cada elemento, crio um array de tamanho 10.
 }
-// Matriz 5 x 10.
 
+// Liberando Matriz 5 x 10
 for (int i = 0; i < 5; i++){ // Para deletar da heap faço a mesma coisa.
     delete[] matriz[i];
 }
@@ -584,7 +585,7 @@ delete[] matriz; // Por fim, deleto o array que guardava arrays.
 
 - Na hora de deletar, é importante **NÃO** deletar o array que guarda arrays diretamente, ou acarretará em memory leak, pois perderemos o conjunto de ponteiros que apontam para aquelas diversas memórias que contém arrays. Ou seja, elas ficarão lá permanentemente e perdidas até o programa encerrar.
 
-- É preciso iterar sobre cada linha e **deletar 1 array por vez**. Após ter liberado toda essa memória para cada linha, libera por fim o array principal.
+- É preciso iterar sobre cada linha e **deletar 1 array por vez**. Após ter liberado toda essa memória para cada linha, libera por fim o array principal que guarda os ponteiros.
 
 Esse tipo de criação de matriz é OK, mas não é otimizado, dado que cada linha dessa contém ponteiros diferentes para diversos lugares na heap que apontam para arrays que estão em segmentos distantes na memória. Ou seja, para iterar sobre isso pode ser extremamente lento.
 
@@ -614,13 +615,13 @@ O objeto *array* possui comportamento diferente quando se utiliza com funções.
 **Todo** array passado para um parâmetro de uma função é reduzido a uma passagem por referência.
 
 ```cpp
-void imprimir(){
+void imprimir(int vec[]){
     
 }
 
 int main(){
     int vec[] = {2, 4, 7};
-    imprimir();
+    imprimir(vec);
 }
 ```
 
