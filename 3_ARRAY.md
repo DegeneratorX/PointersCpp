@@ -469,7 +469,7 @@ Existem diversos outros chars. Irei trabalhar com o padrão ASCII, que também �
 
 - Strings literais com char[] são copiados da .rodata para a pilha (para a variável char[]). Strings literals com char* não existe cópia, char é um ponteiro que apontado direto pra string literal na .rodata.
 
-- É possível editar elementos em um char[], pois é feita uma cópia da string literal para a pilha, onde a variável do tipo char[] recebe essa cópia. Não é possível editar elementos em um char* (derreferenciar), pois o ponteiro aponta pra string literal diretamente na .rodata.
+- É possível substituir caracteres em um char[], pois é feita uma cópia da string literal para a pilha, onde a variável do tipo char[] recebe essa cópia. Não é possível editar elementos em um char* (derreferenciar), pois o ponteiro aponta pra string literal diretamente na .rodata.
 
 Outros exemplos:
 
@@ -612,27 +612,148 @@ O objeto *array* possui comportamento diferente quando se utiliza com funções.
 
 ## Arrays como parâmetro de funções
 
-**Todo** array passado para um parâmetro de uma função é reduzido a uma passagem por referência.
+**Qualquer** array passado para um parâmetro de uma função é reduzido a uma passagem por referência. Ou seja, se "transforma" em um ponteiro.
+
+Não precisa utilizar o operador ampersand (&) na passagem, afinal o objeto array já guarda um endereço, e dá pra passar pra um ponteiro sem o uso do operador, e assim o ponteiro do parâmetro da função irá apontar para o array na main.
 
 ```cpp
-void imprimir(int vec[]){
-    
+// Vira um 'int* vec', que aponta pro array 'vec' na main.
+void imprimir_int(int vec[]){ // O uso do [] é puramente convencional. Colocar números dentro do [] também.
+    cout << vec[1] << endl;
 }
-
 int main(){
     int vec[] = {2, 4, 7};
+    char
     imprimir(vec);
 }
 ```
 
-*char const *const *const strings
+O mesmo ocorre com strings.
 
+```cpp
+void imprimir_char(char str[]){ // Vira um char* str.
+    cout << str << endl;
+}
+void imprimir_char(char str[10]){ // Vira um char* str.
+    cout << str << endl;
+}
+void imprimir_char(char str[2]){ // Vira um char* str. Qualquer número que colocar não surtirá efeito.
+    cout << str << endl;
+}
+void imprimir_char(char* str){ // O que realmente acontece por baixo dos panos
+    cout << str << endl;
+}
+```
+
+É interessante utilizar squared brackets [] apenas por convenção, quando de fato você quer passar um array.
+
+A passagem de uma matriz funciona de forma parecida. Como decai pra um ponteiro, o interessante pra sinalizar que se trata de uma matriz é apenas utilizando [] uma vez.
+
+```cpp
+void imprimo_matriz(int* tabela_2D[], int** tabela_3D[]){ // Matriz 2D e 3D. Passar int** e int*** dá no mesmo.
+    (...)
+}
+```
+
+E um caso mais complexo e pouco utilizado:
+
+```cpp
+void exemplo_maluco(char const *const *const str){ // Decai para char** str
+    (...)
+}
+int main(){
+    char* str[] = {"String1", "String2"}; // Matriz de caracteres 2x8
+    exemplo_maluco(str);
+}
+```
+
+De trás pra frente:
+
+- O terceiro const significa que o ponteiro principal é constante, ou seja, não posso fazer com que str aponte para outro canto.
+- O segundo const significa que o array que contém as strings é constantes.
+- O primeiro const significa que as strings literais são constantes.
+
+Veja mais em:
 https://stackoverflow.com/questions/34174761/char-const-const-const-varname
 
-*char const *const *const strings
-
 ## Arrays como retorno de funções
+
+É impossível retornar um array diretamente sem que ocorra problemas.
+
+Existem formas simples de contornar essa limitação.
+
+### Uso de ponteiros para arrays static ou na heap
+
+Declarando um array estático dentro da função ou criando um na heap, é possível retorná-lo sem problemas.
+
+O conteúdo de um array puro com o espaço alocado na pilha morre após o término de um escopo. Não é possível retornar a cópia de seu conteúdo, somente a cópia do endereço do array. Ou seja, todo o seu conteúdo morre após o término de um escopo.
+
+Um array static terá todo seu espaço preservado na .rodata mesmo após o término de um escopo.
+
+E um array na heap também pode ser retornado.
+
+Ambos os casos só é possível com um auxílio de um ponteiro.
+
+```cpp
+int* retorno_array_estatico(){
+    static int arr_estatico[] = {20, 34, 50};
+    return arr_estatico; // Array funciona parecido com um ponteiro. Nem o espaço estático nem o conteúdo se perde.
+    // O arr_estatico funciona como um ponteiro justamente ao apontar pra esse espaço.
+}
+
+int* retorno_array_heap(){
+    int* arr_heap = new int[3];
+    arr_heap[0] = 20; arr_heap[1] = 34; arr_heap[2] = 50;
+    return arr_heap; // Trivial, mas trabalhoso para colocar elementos sintaticamente.
+}
+```
+
+Para ver mais sobre a keyword static, ler no ARQUIVOS.md no tópico **Static**.
+
+### Uso de Struct/Classe
+
+O uso de Struct, por convenção, é para quando se tem uma Classe pequena que só serve para agrupar pequenos dados. Mas Struct e Classe fazem a mesma coisa. A diferença é que Struct tem seus atributos por padrão public, e Classe tem seus atributos por padrão private. Abaixo um exemplo de uso convencional do Struct: para guardar apenas um array para retornar em uma função.
+
+```cpp
+struct Vetor{
+    int arr[3] = {2, 4, 6};
+};
+Vetor retorno_objeto(){
+    Vetor v;
+    v.arr[1] = 15;
+    return v;
+}
+int main(){
+    Vetor objeto_arr;
+    objeto_arr = retorno_objeto(); // objeto_arr recebe uma cópia do objeto do tipo Vetor da função (v).
+    for (int i = 0; i < 3; i++){
+        cout << objeto_arr.arr[i] << endl; // Imprime: 2, 15 e 6.
+    }
+}
+```
+
+Diferente do array, retornar o objeto de uma Classe também cópia todo seu conteúdo, mesmo que o objeto em si imprima só um endereço.
+
+Também é possível utilizar a Classe std::array, que é mais convencional.
+
+```cpp
+std::array<int,3> retorno_stdarray(){ // Retorno um tipo 'array' de tamanho 3
+    std::array<int,3> arr = {2, 4, 6}; // Funciona de forma idẽntica a um array.
+    arr[1] = 15;
+    return arr;
+}
+int main(){
+	std::array<int,3> arr;
+	arr = retorno_stdarray(); // arr recebe uma cópia do objeto std::array da função
+	for(int i=0 ; i<3 ; i++){
+		cout << arr[i] << endl; // Imprime: 2, 15 e 6.
+	}
+}
+```
 
 # Smart Pointers
 
 # Entendido arrays...
+
+Fiz um documento sobre como trabalhar com arquivos (headers, include, leitura e escrita).
+Leia o arquivo **ARQUIVOS.md**.
