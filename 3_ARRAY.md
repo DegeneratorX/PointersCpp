@@ -753,6 +753,8 @@ int main(){
 
 # Smart Pointers
 
+### TODO
+
 # Entendido arrays...
 
 Fiz um documento sobre como trabalhar com arquivos (headers, include, leitura e escrita).

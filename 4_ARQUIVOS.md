@@ -2,6 +2,12 @@
 
 Abordarei aqui sobre linking, namespace, outros arquivos .cpp, .h, #include, mais sobre declarações e definições, extern, static, inline, diretivas de pre-processamento utilizando #, leitura e escrita de arquivos de texto e bibliotecas stream.
 
+# Compilação
+
+## Compilando um projeto com múltiplos arquivos
+
+## Extra: compilando um projeto com múltiplos arquivos em Python (usando também Cython)
+
 # Linking
 
 - TODO
